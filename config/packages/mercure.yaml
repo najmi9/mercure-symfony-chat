@@ -1,0 +1,6 @@
+mercure:
+    enable_profiler: '%kernel.debug%'
+    hubs:
+        default:
+            url: http://localhost:3000/.well-known/mercure/
+            jwt: '%env(MERCURE_JWT_TOKEN)%'
