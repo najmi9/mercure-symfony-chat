@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+
+<div class="m-5 p-5 bg-light border">
+ <h4> Message to notify all connected users ! </h4>
+ <form method="POST">
+  	<div class="form-group">
+ 		<input type="text" name="message"
+ 		 class="form-control" placeholder="Enter a mssage !">
+  	</div>
+    <div class="form-group">
+ 		<button type="submit" class="btn btn-success">  submit  </button>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+document.querySelector("form").onsubmit = e =>{
+	e.preventDefault();
+	const msg = document.querySelector("input[name='message']").value;
+
+	fetch("/message", {
+		method: "POST",
+		body: JSON.stringify({'message': msg}) ,
+		headers:{
+			"Content-Type": "Application/json"
+		},
+	});
+};
+</script>
+
+
+
+
+
+
+{% endblock %}

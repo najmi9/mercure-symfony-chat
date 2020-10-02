@@ -6,16 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mercure\Update;
-
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\PublisherInterface;
 
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/", name="default")
+     * @Route(path="/message", name="message", methods={"POST", "GET"})
      */
-    public function __invoke(MessageBusInterface $bus, PublisherInterface $pub)
+    public function index(Request $request, MessageBusInterface $bus):Response
     {
+           $data = json_decode($request->getContent(), true);
+         
            $update = new Update(
   	        #topics
             [
@@ -23,8 +26,7 @@ class DefaultController extends AbstractController
             ],
             #data
            json_encode([
-               'message'=>'hello',
-               'userId'=>'5',
+               'message'=>$data['message'],
                ]),
            # targets
            # [
@@ -33,11 +35,18 @@ class DefaultController extends AbstractController
            #]
        );
 
-        $pub->__invoke($update);
-
-        //return $this->render('default/index.html.twig', [
-        //    'controller_name' => 'DefaultController',
-        //]);
-        return $this->json(['ok'=>'ok']);
+         // Sync, or async (RabbitMQ, Kafka...)
+        $bus->dispatch($update);
+        return $this->json(['message'=>'published']);
     }
+
+    /**
+     * @Route(path="/", name="home", methods={"GET"})
+    */
+   
+   public function home():Response
+   {
+      return $this->render("default/index.html.twig");
+   }
+    
 }
