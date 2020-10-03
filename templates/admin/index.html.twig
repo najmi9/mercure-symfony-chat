@@ -1,10 +1,6 @@
+{# templates/admin/index.html.twig #}
 {% extends 'base.html.twig' %}
-
-
-{% block title %}Hello HomeController!{% endblock %}
-
 {% block body %}
-
 <div class="m-5 p-5 bg-light border">
  <h4> Message to notify all connected users ! </h4>
  <form method="POST">
@@ -17,7 +13,6 @@
     </div>
   </form>
 </div>
-
 <script type="text/javascript">
 document.querySelector("form").onsubmit = e =>{
 	e.preventDefault();
@@ -32,10 +27,4 @@ document.querySelector("form").onsubmit = e =>{
 	});
 };
 </script>
-
-
-
-
-
-
 {% endblock %}
