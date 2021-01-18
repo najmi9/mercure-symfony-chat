@@ -16,16 +16,19 @@ class MessageController extends AbstractController
      */
     public function index(Request $request, MessageBusInterface $bus):Response
     {
-           $data = json_decode($request->getContent(), true);        
+           $data = json_decode($request->getContent(), true);   
+           $user = $this->getUser();
+                
            $update = new Update(
   	        #topics
             [
-                sprintf("http://monsite.com/ping"),
+                sprintf("http://beta.gvetsoft.com/en/next-visit/{$user->getId()}"),
             ],
             #data
            json_encode([
                'message'=>$data['message'],
                ]),
+            //true
        );
 
          // Sync, or async (RabbitMQ, Kafka...)

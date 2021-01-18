@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conversations{% endblock %}
+
+{% block body %}
+    <h1>
+        Conversations
+    </h1>
+    <div class="container">
+        {% for conv in convs %}
+            <a href="{{ path('conversation_index', {'id' : conv.id}) }}"><div class="card">
+                <b>{{ conv.email }}</b>: {{ conv.content }}
+                <small class="text-muted text-primary"> {{ conv.createdAt|date }} </small>
+            </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
