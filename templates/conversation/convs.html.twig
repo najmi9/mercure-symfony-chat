@@ -9,7 +9,11 @@
     <div class="container">
         {% for conv in convs %}
             <a href="{{ path('conversation_index', {'id' : conv.id}) }}"><div class="card">
-                <b>{{ conv.email }}</b>: {{ conv.content }}
+                {% for u in conv.users %}
+                    {% if u != app.user %}
+                        <b>{{  u.email }}</b> 
+                    {% endif %}
+                {% endfor %}: {{ conv.lastMessage.content|default('start chat now') }}
                 <small class="text-muted text-primary"> {{ conv.createdAt|date }} </small>
             </div>
             </a>

@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Mercure\Update;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -51,22 +53,47 @@ class ConversationController extends AbstractController
     /**
      * @Route("/conversation/new/{id}", name="conversation_new")
      */
-    public function new(User $user, ConversationRepository $convRepo, EntityManagerInterface $em): Response
+    public function new(User $user, ConversationRepository $convRepo, EntityManagerInterface $em, MessageBusInterface $bus): Response
     {
-        $conv = $convRepo->findOneByParticipants([$this->getUser(), $user]);
+        //$conv = $convRepo->findOneByParticipants([$this->getUser(), $user]);
+        $conv = null;
+
+        $convs = $convRepo->findAll();
+        foreach ($convs as $cv) {
+            if ($cv->getUsers()->getValues() == [$this->getUser(), $user]) {
+                $conv = $cv;
+                break;
+            }
+        }
+
         if ($conv) {
             return $this->redirectToRoute('conversation_index', ['id' => $conv->getId()]);
         }
-        $conv = new Conversation();
 
+        $conv = new Conversation();
         $conv->setCreatedAt(new \DateTime())
             ->setUpdatedAt(new \DateTime())
             ->addUser($this->getUser())
             ->addUser($user)
         ;
-
         $em->persist($conv);
         $em->flush();
+        
+        $id = $this->getUser()->getId();
+
+        $update = new Update(
+            [
+                "/convs/{$id}/other_user/{$user->getId()}",
+                "http://convc.com/convs",
+            ],
+            json_encode([
+                'id' => $conv->getId(),
+                'otherUser' => $user->getEmail(),
+                'createdAt' => $conv->getCreatedAt()
+            ])
+        );
+
+        $bus->dispatch($update);
 
         return $this->redirectToRoute('conversation_index', ['id' => $conv->getId()]);
     }
@@ -76,10 +103,19 @@ class ConversationController extends AbstractController
      */
     public function convs(ConversationRepository $convRepo): Response
     {
-        $convs = $convRepo->findByUser($this->getUser());
+        $convs = $convRepo->findAll();
+        $userConvs = [];
+        foreach ($convs as $conv) {
+            $users = $conv->getUsers()->getValues();
+            $currentUser = $this->getUser();
+            if (in_array($currentUser, $users)) {
+                $userConvs[] = $conv;
+            }
+        }
+        //$convs = $convRepo->findByUser($this->getUser());
 
         return $this->render('conversation/convs.html.twig', [
-            'convs' => $convs
+            'convs' => $userConvs
         ]);
     }
 }
