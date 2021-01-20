@@ -2,19 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Conversation;
-use App\Entity\Message;
 use App\Entity\User;
+use App\Entity\Message;
 use App\Form\MessageType;
-use App\Repository\ConversationRepository;
+use App\Entity\Conversation;
+use Symfony\Component\Mercure\Update;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -34,8 +35,7 @@ class ConversationController extends AbstractController
             $message->setCreatedAt(new \DateTime())
                 ->setUpdatedAt(new \DateTime())
                 ->setUser($this->getUser())
-                ->setConversation($conv)
-            ;
+                ->setConversation($conv);
 
             $conv->setLastMessage($message);
 
@@ -74,11 +74,10 @@ class ConversationController extends AbstractController
         $conv->setCreatedAt(new \DateTime())
             ->setUpdatedAt(new \DateTime())
             ->addUser($this->getUser())
-            ->addUser($user)
-        ;
+            ->addUser($user);
         $em->persist($conv);
         $em->flush();
-        
+
         $id = $this->getUser()->getId();
 
         $update = new Update(
@@ -99,9 +98,9 @@ class ConversationController extends AbstractController
     }
 
     /**
-     * @Route("/conversations", name="conversations")
+     * @Route("/conversations", name="conversations", methods={"GET"})
      */
-    public function convs(ConversationRepository $convRepo): Response
+    public function convs(ConversationRepository $convRepo, SerializerInterface $serializer): Response
     {
         $convs = $convRepo->findAll();
         $userConvs = [];
@@ -109,13 +108,25 @@ class ConversationController extends AbstractController
             $users = $conv->getUsers()->getValues();
             $currentUser = $this->getUser();
             if (in_array($currentUser, $users)) {
-                $userConvs[] = $conv;
+                $c = [];
+                $c['id'] = $conv->getId();
+                $c['msg'] = $conv->getLastMessage()->getContent();
+                $c['date'] = $conv->getLastMessage()->getUpdatedAt();
+                
+                foreach ($users as $user) {
+                    if ($user != $currentUser) {
+                        $c['user']['id'] = $user->getId();
+                        $c['user']['email'] = $user->getEmail();
+                        $c['user']['name'] = $user->getName();
+                        $c['user']['avatar'] = $user->getAvatar();
+                    }
+                }
+                $userConvs[] = $c;
             }
         }
         //$convs = $convRepo->findByUser($this->getUser());
 
-        return $this->render('conversation/convs.html.twig', [
-            'convs' => $userConvs
-        ]);
+
+        return $this->json($userConvs);
     }
 }

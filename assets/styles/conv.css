@@ -1,0 +1,9 @@
+div.conv{
+    color: brown;
+}
+
+div.conv:hover{
+    cursor: pointer;
+    color: brown!important;
+    display: none;
+}

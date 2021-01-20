@@ -1,17 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}Hello DefaultController!{% endblock %}
+{% block title %}Home{% endblock %}
 {% block body %}
-<div class="container m-5 p-5">
-	<div class="alert" id="message">
-	</div>
-	<div class="bg-light">
-		<h1> Go to admin page tp publish a notification ! </h1>
-		<a href="{{ path('admin') }}" class="btn btn-outline-primary">
-			Admin Page Here !
-		</a>
-	</div>
-</div>
-
+{#
 <section class="container">
 	{% for user in users %}
 		{% if user.id != app.user.id %}
@@ -21,21 +11,11 @@
 		{% endif %}
 	{% endfor %}
 </section>
+#}
 
+<div id="root"></div>
+{% endblock %}
 
-<script type="text/javascript">
-	const url = new URL('http://localhost:3000/.well-known/mercure');
-	url.searchParams.append('topic', 'http://beta.gvetsoft.com/en/next-visit/{{ app.user.id }}');
-	const eventSource = new EventSource(url, {
-		withCredentials: true
-	});
-	eventSource.onmessage = e => {
-		alert(e.data)
-		const data = JSON.parse(e.data);
-		const div = document.createElement("div");
-		div.setAttribute("class", "alert alert-success");
-		div.innerHTML = data.message;
-		document.querySelector("div#message").appendChild(div);
-	}; 
-</script>
+{% block javascripts %}
+	{{ encore_entry_script_tags('app') }}
 {% endblock %}
