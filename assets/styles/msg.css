@@ -1,0 +1,25 @@
+.my_msg{
+    float: left;  
+}
+.not_my_msg{
+    float: right;
+}
+
+.msg-text{
+    margin-left: 5px;
+    margin-top: 3px;
+}
+
+div#msg{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    margin-top: 3px;
+    height: 70px;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.msgs{
+    height: 500px;
+    overflow: auto;
+}

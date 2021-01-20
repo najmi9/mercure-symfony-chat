@@ -4,15 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Message;
-use App\Form\MessageType;
 use App\Entity\Conversation;
-use Symfony\Component\Mercure\Update;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,41 +21,47 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ConversationController extends AbstractController
 {
     /**
-     * @Route("/conversation/{id}/index", name="conversation_index")
+     * @Route("/conversation/{id}/index", name="conversation_index", methods={"POST"})
      */
-    public function index(Conversation $conv, Request $request, EntityManagerInterface $em): Response
+    public function index(Conversation $conv, Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $message = new Message();
+            if (!$request->getContent()) {
+                $this->json([], 400);
+            }
 
-        $form = $this->createForm(MessageType::class, $message);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+            $message = new Message();
+        
             $message->setCreatedAt(new \DateTime())
                 ->setUpdatedAt(new \DateTime())
                 ->setUser($this->getUser())
-                ->setConversation($conv);
+                ->setContent($request->getContent())
+                ->setConversation($conv)
+            ;
 
-            $conv->setLastMessage($message);
+            $conv->setLastMessage($message)
+                ->setUpdatedAt(new \DateTime())
+            ;
 
             $em->persist($message);
             $em->persist($conv);
             $em->flush();
-        }
 
-        return $this->render('conversation/index.html.twig', [
-            'conv' => $conv,
-            'form' => $form->createView()
-        ]);
+        return $this->json(['id' => $message->getId()]);
+   
     }
 
     /**
      * @Route("/conversation/new/{id}", name="conversation_new")
      */
-    public function new(User $user, ConversationRepository $convRepo, EntityManagerInterface $em, MessageBusInterface $bus): Response
+    public function new(User $user, ConversationRepository $convRepo, EntityManagerInterface $em): Response
     {
         //$conv = $convRepo->findOneByParticipants([$this->getUser(), $user]);
-        $conv = null;
+        if (!$user || $user === $this->getUser()) {
+            return $this->json([], 400);
+        }
 
+        $conv = null;
+        
         $convs = $convRepo->findAll();
         foreach ($convs as $cv) {
             if ($cv->getUsers()->getValues() == [$this->getUser(), $user]) {
@@ -67,7 +71,10 @@ class ConversationController extends AbstractController
         }
 
         if ($conv) {
-            return $this->redirectToRoute('conversation_index', ['id' => $conv->getId()]);
+            return $this->json([
+                'id' => $conv->getId(),
+                'alreadyExists' => true,
+            ]);
         }
 
         $conv = new Conversation();
@@ -77,24 +84,7 @@ class ConversationController extends AbstractController
             ->addUser($user);
         $em->persist($conv);
         $em->flush();
-
-        $id = $this->getUser()->getId();
-
-        $update = new Update(
-            [
-                "/convs/{$id}/other_user/{$user->getId()}",
-                "http://convc.com/convs",
-            ],
-            json_encode([
-                'id' => $conv->getId(),
-                'otherUser' => $user->getEmail(),
-                'createdAt' => $conv->getCreatedAt()
-            ])
-        );
-
-        $bus->dispatch($update);
-
-        return $this->redirectToRoute('conversation_index', ['id' => $conv->getId()]);
+        return $this->json(['id' => $conv->getId(), 'alreadyExists' => false]);
     }
 
     /**
@@ -110,15 +100,17 @@ class ConversationController extends AbstractController
             if (in_array($currentUser, $users)) {
                 $c = [];
                 $c['id'] = $conv->getId();
-                $c['msg'] = $conv->getLastMessage()->getContent();
-                $c['date'] = $conv->getLastMessage()->getUpdatedAt();
+                $c['msg'] = $conv->getLastMessage() ==! null ?? $conv->getLastMessage()->getContent();
+                $c['date'] = $conv->getLastMessage() ==! null ?? $conv->getLastMessage()->getUpdatedAt();
                 
                 foreach ($users as $user) {
                     if ($user != $currentUser) {
-                        $c['user']['id'] = $user->getId();
-                        $c['user']['email'] = $user->getEmail();
-                        $c['user']['name'] = $user->getName();
-                        $c['user']['avatar'] = $user->getAvatar();
+                        $c['user'] = [
+                            'id' => $user->getId(),
+                            'email' => $user->getemail(),
+                            'name' => $user->getName(),
+                            'avatar' => $user->getAvatar()
+                        ];
                     }
                 }
                 $userConvs[] = $c;

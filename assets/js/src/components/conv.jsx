@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react';
 import '../../../styles/conv.css';
-import Msgs from '../pages/Msgs';
+import Msgs from '../pages/msgs';
 import ReactDOM from 'react-dom';
 
 const Conv = ({ conv }) => {
 
     const handleConvClick = (id) => {
-        //alert(id)
         const msgsContainer = document.querySelector('div.msgs');
         ReactDOM.render(<Msgs conv={id}/>, msgsContainer);
     }
