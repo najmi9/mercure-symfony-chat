@@ -1,0 +1,65 @@
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.4-node-browsers
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: mercure_blog
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_PASSWORD:
+      - image: mysql:5.7
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
+        environment:
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+    working_directory: ~/my_blog # directory where steps will run
+    steps: # a set of executable commands
+      - checkout # special step to check out source code to working directory
+      - run: |
+            sudo apt update
+            sudo apt install -y libsqlite3-dev zlib1g-dev mariadb-client zlib1g-dev libpng-dev
+            sudo docker-php-ext-install zip pdo_mysql gd
+            sudo docker-php-ext-enable zip pdo_mysql gd
+            sudo composer self-update
+      - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
+          keys:
+            - composer-v2-{{ checksum "composer.lock" }}
+            # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
+            - composer-v2-
+      - run: composer install -n --prefer-dist --no-scripts
+      - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
+          key: composer-v2-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      - restore_cache: # special step to restore the dependency cache if `package.json` does not change
+          keys:
+            - node-v1-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
+            - node-v1-
+      - run: |
+            cp .env .env.local
+            wget https://get.sensiolabs.org/security-checker.phar
+            chmod a+x security-checker.phar
+            curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o php-cs-fixer
+            chmod a+x php-cs-fixer
+            yarn install
+      - run: php security-checker.phar security:check composer.lock
+      - run: ./php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
+      #- run: php -d memory_limit=-1 vendor/bin/phpstan analyse src --level max
+      - run: php -d memory_limit=-1 vendor/bin/phpstan analyse src --level 5
+      #- run: php -d memory_limit=-1 vendor/bin/simple-phpunit
+      - save_cache: # special step to save the dependency cache with the `package.json` cache key template
+          key: node-v1-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run: | 
+            yarn run eslint assets/js/components/
+            yarn run eslint assets/js/pages/
+            yarn run encore production
+
+workflows:
+  version: 2
+  notify_deploy:
+    jobs:
+      - build
