@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { new_msg_url } from "../urls";
 
 const MsgForm = ({id}) => {
     const [msg, setMsg] = useState('');
@@ -9,7 +10,7 @@ const MsgForm = ({id}) => {
             return;
         }
         
-        fetch(`/api/convs/${id}/msgs/new`, {
+        fetch(new_msg_url(id), {
             method: 'POST',
             body: msg
         });

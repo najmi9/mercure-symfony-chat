@@ -37,7 +37,6 @@ class ConversationController extends AbstractController
                 ->setUpdatedAt(new \DateTime())
                 ->setUser($this->getUser())
                 ->setContent($request->getContent())
-                //->setOtherUserId($user->getId())
                 ->setConversation($conv)
             ;
 
@@ -65,18 +64,22 @@ class ConversationController extends AbstractController
         $conv = null;
 
         $convs = $convRepo->findAll();
+        $ids = [];
+        
         foreach ($convs as $cv) {
-            if ($cv->getUsers()->getValues() === [$this->getUser(), $user]) {
+            foreach ($cv->getUsers()  as $u) {
+                $ids[] = $u->getId();
+            }
+            if (in_array($user, $cv->getUsers()->getValues()) && in_array($this->getuser(), $cv->getUsers()->getValues())) {
                 $conv = $cv;
                 break;
             }
         }
- 
+
         if ($conv) {
             return $this->json([
                 'id' => $conv->getId(),
                 'alreadyExists' => true,
-                'otherUserId' => $user->getId(),
             ]);
         }
 
@@ -91,7 +94,6 @@ class ConversationController extends AbstractController
         return $this->json([
             'id' => $conv->getId(), 
             'alreadyExists' => false,
-            'otherUserId' => $user->getId(),
         ]);
     }
 

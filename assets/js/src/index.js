@@ -1,10 +1,18 @@
-import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import React, { useState } from 'react';
+import AuthContext from './contexts/AuthContext';
 import Home from './pages/home';
 
 const App = () => {
+
+    const [user, setUser] = useState();
+
     return(
-        <Home />
+        <AuthContext.Provider value={{
+            user,
+            setUser
+        }}>
+            <Home />
+        </AuthContext.Provider>
     );
 }
 

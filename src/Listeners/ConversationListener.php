@@ -6,11 +6,9 @@ namespace App\Listeners;
 
 use App\Entity\Conversation;
 use Symfony\Component\Mercure\Update;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ConversationListener
 {
@@ -25,12 +23,12 @@ class ConversationListener
         $this->security = $security;
     }
 
-    public function postPersist(Conversation $conv, LifecycleEventArgs $event): void
+    public function postPersist(Conversation $conv): void
     {
         $this->bus->dispatch($this->getUpdate($conv));
     }
 
-    public function postUpdate(Conversation $conv, LifecycleEventArgs $event): void
+    public function postUpdate(Conversation $conv): void
     {
         $this->bus->dispatch($this->getUpdate($conv, false));
     }
@@ -42,8 +40,8 @@ class ConversationListener
         $c = [];
         $c['new'] = $isNew;
         $c['id'] = $conv->getId();
-        $c['msg'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getContent();
-        $c['date'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getUpdatedAt();
+        $c['msg'] = $conv->getLastMessage() != null ? $conv->getLastMessage()->getContent() : 'Start The Chat Now';
+        $c['date'] = $conv->getLastMessage() != null ? $conv->getLastMessage()->getUpdatedAt() : $conv->getUpdatedAt();
 
         foreach ($conv->getUsers() as $user) {
             if ($user != $currentUser) {
@@ -55,10 +53,12 @@ class ConversationListener
         }
 
         $data = $this->serializer->serialize($c, 'json');
-        //$token = $nextVisit->getVeterinary()->getToken();
-
+        $targets = [];
+        foreach ($conv->getUsers() as $user) {
+            $targets[] = "http://mywebsite.com/convs/{$user->getId()}";
+        }
         return new Update(
-            ["http://mywebsite.com/convs"],
+            $targets,
             $data,
             //true
         );

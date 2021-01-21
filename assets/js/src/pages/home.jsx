@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Convs from './convs';
-import Users from './users';
+import React from 'react';
+import Convs from '../partials/convs';
+import Users from '../partials/users';
 
 const Home = () => {
    

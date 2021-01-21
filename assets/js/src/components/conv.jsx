@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, {  } from 'react';
 import '../../../styles/conv.css';
-import Msgs from '../pages/msgs';
+import Msgs from '../partials/msgs';
 import ReactDOM from 'react-dom';
 
 const Conv = ({ conv }) => {
