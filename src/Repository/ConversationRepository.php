@@ -74,5 +74,4 @@ class ConversationRepository extends ServiceEntityRepository
         ;
         return $qb;
     }
-    
 }

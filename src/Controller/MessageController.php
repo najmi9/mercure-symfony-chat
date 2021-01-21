@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @Route("/api")
+ */
 class MessageController extends AbstractController
 {
     /**

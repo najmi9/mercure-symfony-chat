@@ -12,31 +12,31 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class MercureCookieGenerator
 {
-	private string $secret;
+    private string $secret;
 
-	function __construct(string $secret)
-	{
-		$this->secret = $secret;
-	}
+    public function __construct(string $secret)
+    {
+        $this->secret = $secret;
+    }
 
-	public function generate(User $user): Cookie
-	{
-		$configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->secret));
+    public function generate(User $user): Cookie
+    {
+        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->secret));
 
         $token = $configuration->builder()
             ->withClaim('mercure', [
-				'subscribe' => [
+                'subscribe' => [
                 "http://beta.gvetsoft.com/en/next-visit/{$user->getId()}",
             ]])
             ->getToken($configuration->signer(), $configuration->signingKey())
             ->toString()
-		;
-		return Cookie::create('mercureAuthorization')
+        ;
+        return Cookie::create('mercureAuthorization')
             ->withValue($token)
             ->withPath('/.well-known/mercure')
             ->withSecure(true)
             ->withHttpOnly(true)
             ->withSameSite('strict')
-        ;     
-	}
+        ;
+    }
 }

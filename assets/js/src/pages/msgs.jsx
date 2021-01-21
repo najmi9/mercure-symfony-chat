@@ -16,7 +16,7 @@ const Msgs = ({conv}) => {
 
         eventSource.onmessage = e => {
             const data = JSON.parse(e.data);
-            setMsgs([...msgs, data]);  
+            setMsgs(msgs => [...msgs, data]);  
         };
 
     }, [conv]);

@@ -13,7 +13,7 @@ class JWTProvider
 {
     private $secret;
     //récupérer les utilisateur et faire le publish en fonction
-    function __construct(string $secret)
+    public function __construct(string $secret)
     {
         $this->secret = $secret;
     }

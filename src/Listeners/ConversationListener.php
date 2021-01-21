@@ -27,12 +27,12 @@ class ConversationListener
 
     public function postPersist(Conversation $conv, LifecycleEventArgs $event): void
     {
-        $this->bus->dispatch($this->getUpdate($conv));
+        //$this->bus->dispatch($this->getUpdate($conv));
     }
 
     public function postUpdate(Conversation $conv, LifecycleEventArgs $event): void
     {
-        $this->bus->dispatch($this->getUpdate($conv, false));
+        //$this->bus->dispatch($this->getUpdate($conv, false));
     }
 
     private function getUpdate(Conversation $conv, bool $isNew = true): Update
@@ -41,8 +41,8 @@ class ConversationListener
         $c = [];
         $c['new'] = $isNew ? true: false;
         $c['id'] = $conv->getId();
-        $c['msg'] = $conv->getLastMessage() ==! null ?? $conv->getLastMessage()->getContent();
-        $c['date'] = $conv->getLastMessage() ==! null ?? $conv->getLastMessage()->getUpdatedAt();
+        $c['msg'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getContent();
+        $c['date'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getUpdatedAt();
 
         foreach ($conv->getUsers() as $user) {
             if ($user != $currentUser) {

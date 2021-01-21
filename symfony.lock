@@ -152,6 +152,9 @@
     "phpdocumentor/type-resolver": {
         "version": "1.4.0"
     },
+    "phpstan/phpstan": {
+        "version": "0.12.68"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -446,6 +449,9 @@
     },
     "symfony/property-info": {
         "version": "v5.1.5"
+    },
+    "symfony/proxy-manager-bridge": {
+        "version": "v5.1.10"
     },
     "symfony/redis-messenger": {
         "version": "v5.1.5"

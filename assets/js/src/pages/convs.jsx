@@ -19,7 +19,7 @@ const Convs = () => {
         eventSource.onmessage = e => {
             const data = JSON.parse(e.data);
             if (data.new) {
-                setConvs([...convs, data]);
+                setConvs(convs => [...convs, data]);
             } else {
                 // update the conv to the top
                 // update his content.
@@ -35,6 +35,7 @@ const Convs = () => {
 
     return (
         <div className="convs" ref={divRef}>
+            {console.log(convs)}
             { convs.map(c => (<Conv key={c.id} conv={c} />))}
         </div>
     );

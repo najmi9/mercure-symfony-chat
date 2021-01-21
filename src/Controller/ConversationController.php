@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @IsGranted("ROLE_USER")
+ * @Route("/api")
  */
 class ConversationController extends AbstractController
 {
@@ -25,35 +26,34 @@ class ConversationController extends AbstractController
      */
     public function index(Conversation $conv, Request $request, EntityManagerInterface $em): JsonResponse
     {
-            if (!$request->getContent()) {
-                $this->json([], 400);
-            }
+        if (!$request->getContent()) {
+            $this->json([], 400);
+        }
 
-            $message = new Message();
+        $message = new Message();
         
-            $message->setCreatedAt(new \DateTime())
+        $message->setCreatedAt(new \DateTime())
                 ->setUpdatedAt(new \DateTime())
                 ->setUser($this->getUser())
                 ->setContent($request->getContent())
                 ->setConversation($conv)
             ;
 
-            $conv->setLastMessage($message)
+        $conv->setLastMessage($message)
                 ->setUpdatedAt(new \DateTime())
             ;
 
-            $em->persist($message);
-            $em->persist($conv);
-            $em->flush();
+        $em->persist($message);
+        $em->persist($conv);
+        $em->flush();
 
         return $this->json(['id' => $message->getId()]);
-   
     }
 
     /**
      * @Route("/conversation/new/{id}", name="conversation_new")
      */
-    public function new(User $user, ConversationRepository $convRepo, EntityManagerInterface $em): Response
+    public function new(User $user = null, ConversationRepository $convRepo, EntityManagerInterface $em): Response
     {
         //$conv = $convRepo->findOneByParticipants([$this->getUser(), $user]);
         if (!$user || $user === $this->getUser()) {
@@ -100,8 +100,8 @@ class ConversationController extends AbstractController
             if (in_array($currentUser, $users)) {
                 $c = [];
                 $c['id'] = $conv->getId();
-                $c['msg'] = $conv->getLastMessage() ==! null ?? $conv->getLastMessage()->getContent();
-                $c['date'] = $conv->getLastMessage() ==! null ?? $conv->getLastMessage()->getUpdatedAt();
+                $c['msg'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getContent();
+                $c['date'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getUpdatedAt();
                 
                 foreach ($users as $user) {
                     if ($user != $currentUser) {

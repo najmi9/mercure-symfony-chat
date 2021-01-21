@@ -26,12 +26,12 @@ class MessageListener
 
     public function postPersist(Message $msg, LifecycleEventArgs $event): void
     {
-        $this->bus->dispatch($this->getUpdate($msg));
+        //$this->bus->dispatch($this->getUpdate($msg));
     }
 
     public function postUpdate(Message $msg, LifecycleEventArgs $event): void
     {
-        $this->bus->dispatch($this->getUpdate($msg));
+        //$this->bus->dispatch($this->getUpdate($msg));
     }
 
     private function getUpdate(Message $msg): Update
