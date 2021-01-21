@@ -1,4 +1,4 @@
-import App from './js/src/index';
+import App from './js/index';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles/msg.css';

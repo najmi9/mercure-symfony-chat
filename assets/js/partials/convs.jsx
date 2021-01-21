@@ -22,6 +22,7 @@ const Convs = () => {
             // else we order
             if (data.new) {
                 setConvs(convs => [data, ...convs]);
+                console.log(data.user);
             } else {
                 setConvs(convs => {
                     const oldConvs = [...convs];
