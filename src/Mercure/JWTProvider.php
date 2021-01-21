@@ -25,7 +25,6 @@ class JWTProvider
         return $configuration->builder()
             ->withClaim('mercure', [
                 'publish' => [
-                    //"http://beta.gvetsoft.com/en/next-visit/{$user->getId()}",
                     '*'
                 ]
             ])

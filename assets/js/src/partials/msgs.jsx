@@ -10,21 +10,23 @@ const Msgs = ({conv}) => {
         fetch(msgs_url(conv))
         .then(res => res.json())
         .then(res => setMsgs(res));
-
-        const url = new URL(hub_url);
-        url.searchParams.append('topic', msgTopic(conv));
-        const eventSource = new EventSource(url, { withCredentials: true });
         const userId = parseInt(document.querySelector('div.data').dataset.user);
-
+        const url = new URL(hub_url);
+        url.searchParams.append('topic', msgTopic(conv, userId));
+        const eventSource = new EventSource(url, { withCredentials: true });
+        
         /**
          * @param {MessageEvent} e 
          */
         eventSource.onmessage = e => {
-            console.log(e)
             const data = JSON.parse(e.data);
             document.querySelector('div.msgs').scrollTop = document.querySelector('div.msgs').scrollHeight; 
             setMsgs(msgs => [...msgs, Object.assign({}, data, {isMyMsg: userId === data.user.id})]);
         };
+
+        return function cleanup() {
+            eventSource.close();
+        }
     }, [conv]);
 
     return (

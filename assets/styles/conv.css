@@ -2,8 +2,20 @@
 
 div.conv:hover{
     cursor: pointer;
-    transform: scale(1.05);
+    transform: scale(1.005);
     transition: transform 0.5s;
     border: 1px solid blueviolet;
     border-radius: 5px;
+}
+
+.user{
+   text-align: center;
+    border-bottom: 1px solid rgb(73, 192, 240);
+    border-radius: 50%;
+}
+
+.user:hover{
+    cursor: pointer;
+    transform: scale(1.005);
+    transition: transform 0.5s;
 }

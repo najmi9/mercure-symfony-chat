@@ -11,13 +11,13 @@ const Users = () => {
         .then(r => r.json())
         .then(res => {
             setUsers(res)
-        })
+        });
     }, []);
 
     return(
-        <div className="users">
+        <>
             { users.map(u => (<User key={u.id} user={u} />)) }
-        </div>
+        </>
     );
 };
 

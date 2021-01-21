@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Message;
 use App\Entity\Conversation;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -40,5 +42,36 @@ class MessageController extends AbstractController
         }
 
         return $this->json($data);
+    }
+
+     /**
+     * @Route("/convs/{id}/msgs/new", name="messages_new", methods={"POST"})
+     */
+    public function index(Conversation $conv, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
+
+        if (!$request->getContent()) {
+            $this->json([], 400);
+        }
+
+        $message = new Message();
+        
+        $message->setCreatedAt(new \DateTime())
+                ->setUpdatedAt(new \DateTime())
+                ->setUser($this->getUser())
+                ->setContent($request->getContent())
+                ->setConversation($conv)
+            ;
+
+        $conv->setLastMessage($message)
+                ->setUpdatedAt(new \DateTime())
+            ;
+
+        $em->persist($message);
+        $em->persist($conv);
+        $em->flush();
+
+        return $this->json(['id' => $message->getId()]);
     }
 }

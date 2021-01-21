@@ -4,7 +4,7 @@ import { convs_url, convTopic, hub_url } from '../urls';
 
 const Convs = () => {
     const [convs, setConvs] = useState([]);
-   
+
     const fetchConvs = async () => {
         const r = await fetch(convs_url);
         const res = await r.json();
@@ -22,28 +22,34 @@ const Convs = () => {
             // else we order
             if (data.new) {
                 setConvs(convs => [data, ...convs]);
-            } else {               
+            } else {
                 setConvs(convs => {
                     const oldConvs = [...convs];
+                    const oldData = oldConvs.filter(e => e.id === data.id)[0];
+                    oldData.msg = data.msg; oldData.date = data.date;
                     const index = oldConvs.findIndex(e => e.id == data.id);
-                    oldConvs.splice(index, 1);
-                    oldConvs.splice(0, 0, data);
+                    oldConvs.splice(index, 1); oldConvs.splice(0, 0, oldData);
                     return oldConvs
                 });
             }
-            
         };
+
+        return eventSource;
     }
 
     useEffect(() => {
         fetchConvs();
-        listenToConvs();  
-    }, [])
+        const eventSource = listenToConvs();
+        
+        return function cleanup() {
+            eventSource.close();
+        }
+    }, []);
 
     return (
-        <div className="convs">
+        <>
             { convs.map(c => (<Conv key={c.id} conv={c} />))}
-        </div>
+        </>
     );
 }
 

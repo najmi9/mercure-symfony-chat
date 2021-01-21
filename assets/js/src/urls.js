@@ -4,7 +4,7 @@ const msgs_url = (conv) => (`/api/convs/${conv}/msgs`);
 const new_conv_url = (id) => (`/api/convs/new/${id}`);
 const new_msg_url = (id) => (`/api/convs/${id}/msgs/new`);
 const hub_url = 'http://localhost:3000/.well-known/mercure';
-const msgTopic = (conv) => (`http://mywebsite.com/msg/${conv}`);
+const msgTopic = (conv, userId) => (`http://mywebsite.com/msg/${conv}/users/${userId}`);
 const convTopic = (id) => (`http://mywebsite.com/convs/${id}`);
 
 export {

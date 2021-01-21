@@ -43,6 +43,7 @@ class ConversationListener
         $c['msg'] = $conv->getLastMessage() != null ? $conv->getLastMessage()->getContent() : 'Start The Chat Now';
         $c['date'] = $conv->getLastMessage() != null ? $conv->getLastMessage()->getUpdatedAt() : $conv->getUpdatedAt();
 
+ 
         foreach ($conv->getUsers() as $user) {
             if ($user != $currentUser) {
                 $c['user']['id'] = $user->getId();
@@ -51,12 +52,13 @@ class ConversationListener
                 $c['user']['avatar'] = $user->getAvatar();
             }
         }
-
+        
         $data = $this->serializer->serialize($c, 'json');
         $targets = [];
         foreach ($conv->getUsers() as $user) {
             $targets[] = "http://mywebsite.com/convs/{$user->getId()}";
         }
+
         return new Update(
             $targets,
             $data,

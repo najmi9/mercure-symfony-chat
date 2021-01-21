@@ -6,7 +6,6 @@ namespace App\Listeners;
 
 use App\Entity\Message;
 use Symfony\Component\Mercure\Update;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -50,9 +49,13 @@ class MessageListener
 
         $data = $this->serializer->serialize($data, 'json');
         
+        $targets = [];
 
+        foreach ($msg->getConversation()->getUsers() as $user) {
+            $targets[] = "http://mywebsite.com/msg/{$msg->getConversation()->getId()}/users/{$user->getId()}";
+        }
         return new Update(
-            ["http://mywebsite.com/msg/{$msg->getConversation()->getId()}"],
+            $targets,
             $data,
             //true
         );

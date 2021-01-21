@@ -26,7 +26,7 @@ class MercureCookieGenerator
         $token = $configuration->builder()
             ->withClaim('mercure', [
                 'subscribe' => [
-                "http://beta.gvetsoft.com/en/next-visit/{$user->getId()}",
+                "*",
             ]])
             ->getToken($configuration->signer(), $configuration->signingKey())
             ->toString()

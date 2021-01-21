@@ -5,9 +5,16 @@
     float: right;
 }
 
+.not_my_msg .msg-text{
+    color: green;
+}
+
 .msg-text{
-    margin-left: 5px;
-    margin-top: 3px;
+   text-align: center;
+   margin-top: 2px;
+   padding: 3px;
+   border-radius: 5px;
+   color: blue;
 }
 
 div#msg{
@@ -17,9 +24,14 @@ div#msg{
     border-radius: 5px;
     margin-left: 5px;
     margin-right: 5px;
+    z-index: -1;
+    background-color: rgba(55, 158, 177, 0.2);
+   
 }
 
 .msgs{
     height: 500px;
     overflow: auto;
 }
+
+
