@@ -44,9 +44,8 @@ jobs:
             curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o php-cs-fixer
             sudo chmod a+x php-cs-fixer
             chmod a+x php-cs-fixer
-            sudo chmod a+x security-checker.phar
             yarn install
-      - run: php security-checker.phar security:check composer.lock
+      #- run: php security-checker.phar security:check composer.lock
       - run: ./php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
       #- run: php -d memory_limit=-1 vendor/bin/phpstan analyse src --level max
       - run: php -d memory_limit=-1 vendor/bin/phpstan analyse src --level 5
