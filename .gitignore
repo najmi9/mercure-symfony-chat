@@ -22,3 +22,10 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+updates.db
+todo.md
+.php_cs.cache
+.php-cs-fixer-v2.phar
+.circleci/*
+.phpintel/*
+mercure_binary

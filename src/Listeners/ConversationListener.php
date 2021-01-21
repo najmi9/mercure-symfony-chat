@@ -27,19 +27,20 @@ class ConversationListener
 
     public function postPersist(Conversation $conv, LifecycleEventArgs $event): void
     {
-        //$this->bus->dispatch($this->getUpdate($conv));
+        $this->bus->dispatch($this->getUpdate($conv));
     }
 
     public function postUpdate(Conversation $conv, LifecycleEventArgs $event): void
     {
-        //$this->bus->dispatch($this->getUpdate($conv, false));
+        $this->bus->dispatch($this->getUpdate($conv, false));
     }
 
     private function getUpdate(Conversation $conv, bool $isNew = true): Update
     {
+        // Do not Display my name on any conversation.
         $currentUser = $this->security->getUser();
         $c = [];
-        $c['new'] = $isNew ? true: false;
+        $c['new'] = $isNew;
         $c['id'] = $conv->getId();
         $c['msg'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getContent();
         $c['date'] = $conv->getLastMessage() != null ?? $conv->getLastMessage()->getUpdatedAt();

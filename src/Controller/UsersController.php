@@ -5,26 +5,31 @@ namespace App\Controller;
 use App\Repository\UserRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Serializer\SerializerInterface;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+/**
+ * @IsGranted("ROLE_USER")
+ * @Route("/api")
+*/
 class UsersController extends AbstractController
 {
     /**
      * @Route("/users", name="users", methods={"GET"})
      */
-    public function index(UserRepository $userRepo, SerializerInterface $serializer): JsonResponse
+    public function index(UserRepository $userRepo): JsonResponse
     {
-        $data = $serializer->serialize($userRepo->findAll(), 'json', [
-            AbstractNormalizer::ATTRIBUTES => [
-                'id',
-                'name',
-                'email',
-                'avatar',
-            ],
-        ]);
+        $users = [];
+        foreach($userRepo->findAll() as $u) {
+            if ($u !== $this->getUser()) {
+                $users[] = [
+                    'id' => $u->getId(),
+                    'name' => $u->getName(),
+                    'avatar' => $u->getAvatar(),
+                    'email' => $u->getEmail(),
+                ];
+            }
+        }
 
-        return $this->json($data);
+        return $this->json($users);
     }
 }

@@ -6,7 +6,7 @@ const Convs = () => {
     const divRef= useRef(null);
    
     const fetchConvs = async () => {
-        const r = await fetch('/conversations');
+        const r = await fetch('/api/convs');
         const res = await r.json();
         setConvs(res);
     }

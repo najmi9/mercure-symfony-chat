@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Msg from '../components/msg';
 import MsgForm from '../components/msg_form';
 
-const Msgs = ({conv}) => {
+const Msgs = ({conv, otherUserId}) => {
     const [msgs, setMsgs] = useState([]);
 
     useEffect(() => {
-        fetch(`/conversation/${conv}/msgs`)
+        fetch(`/api/convs/${conv}/msgs`)
         .then(res => res.json())
         .then(res => setMsgs(res));
 
@@ -16,6 +16,7 @@ const Msgs = ({conv}) => {
 
         eventSource.onmessage = e => {
             const data = JSON.parse(e.data);
+            console.log(data);
             setMsgs(msgs => [...msgs, data]);  
         };
 
@@ -23,7 +24,7 @@ const Msgs = ({conv}) => {
 
     return (
         <div className="msgs">      
-            { msgs.map(m => (<Msg msg={m} key={m.id} />)) }
+            { msgs.map(m => (<Msg msg={m} key={m.id}/>)) }
             <MsgForm id={conv} />
         </div>
     );

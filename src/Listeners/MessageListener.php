@@ -24,21 +24,20 @@ class MessageListener
         $this->security = $security;
     }
 
-    public function postPersist(Message $msg, LifecycleEventArgs $event): void
+    public function postPersist(Message $msg): void
     {
-        //$this->bus->dispatch($this->getUpdate($msg));
+        $this->bus->dispatch($this->getUpdate($msg));
     }
 
-    public function postUpdate(Message $msg, LifecycleEventArgs $event): void
+    public function postUpdate(Message $msg): void
     {
-        //$this->bus->dispatch($this->getUpdate($msg));
+        $this->bus->dispatch($this->getUpdate($msg));
     }
 
-    private function getUpdate(Message $msg): Update
+    private function getUpdate(Message $msg): ?Update
     {
         $data = [
             'id' => $msg->getId(),
-            'isMyMsg' => $msg->getUser() === $this->security->getUser(),
             'user' => [
                 'id' => $msg->getUser()->getId(),
                 'name' => $msg->getUser()->getName(),

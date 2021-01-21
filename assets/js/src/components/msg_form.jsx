@@ -9,7 +9,7 @@ const MsgForm = ({id}) => {
             return;
         }
         
-        fetch(`/conversation/${id}/index`, {
+        fetch(`/api/convs/${id}/msgs/new`, {
             method: 'POST',
             body: msg
         });

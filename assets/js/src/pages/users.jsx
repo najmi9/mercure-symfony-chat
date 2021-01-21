@@ -6,10 +6,10 @@ const Users = () => {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        fetch('/users')
+        fetch('/api/users')
         .then(r => r.json())
         .then(res => {
-            setUsers(JSON.parse(res))
+            setUsers(res)
         })
     }, []);
 
