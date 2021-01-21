@@ -39,10 +39,12 @@ jobs:
             - node-v1-
       - run: |
             cp .env .env.local
-            wget https://get.sensiolabs.org/security-checker.phar
-            chmod a+x security-checker.phar
+            wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
+            wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.15.8/php-cs-fixer.phar -O php-cs-fixer
             curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o php-cs-fixer
+            sudo chmod a+x php-cs-fixer
             chmod a+x php-cs-fixer
+            sudo chmod a+x security-checker.phar
             yarn install
       - run: php security-checker.phar security:check composer.lock
       - run: ./php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
