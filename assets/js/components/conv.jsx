@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../../styles/conv.css';
 import Msgs from '../partials/msgs';
 import ReactDOM from 'react-dom';
 import moment from 'moment';

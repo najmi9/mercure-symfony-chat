@@ -71,7 +71,8 @@ class ConversationController extends AbstractController
     {
         //$this->denyAccessUnlessGranted('CONV_VIEW', );
         // To Do SQL Improvments, findByUser.
-        $convs = $convRepo->findAll();
+        $convs = $convRepo->findAllConvs();
+
         $userConvs = [];
         foreach ($convs as $conv) {
             $users = $conv->getUsers()->getValues();
@@ -95,8 +96,6 @@ class ConversationController extends AbstractController
                 $userConvs[] = $c;
             }
         }
-        //$convs = $convRepo->findByUser($this->getUser());
-
 
         return $this->json($userConvs);
     }
