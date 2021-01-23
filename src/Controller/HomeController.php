@@ -15,7 +15,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index(MercureCookieGenerator $cookieGenerator, UserRepository $u): Response
+    public function index(MercureCookieGenerator $cookieGenerator, UserRepository $user): Response
     {
         $response =  $this->render("home/index.html.twig");
         $response->headers->setCookie($cookieGenerator->generate($this->getUser()));

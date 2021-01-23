@@ -1,6 +1,3 @@
-
-
-
 # mercure_symfony_blog
 
 Author : Imad Najmi
@@ -16,3 +13,11 @@ run the mercure hub with :
 ```bash
  ./mercure --jwt-key='!ChangeMe!' --addr='localhost:3000' --allow-anonymous --cors-allowed-origins='http://localhost:8000'
 ```
+
+
+- Msgs
+    - Msg
+- Users
+    - User
+- Convs
+    - Conv

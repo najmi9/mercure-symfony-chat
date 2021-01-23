@@ -4,10 +4,9 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 
 const Conv = React.memo(({ conv }) => {
-
     const handleConvClick = useCallback((id) => {
         const msgsContainer = document.querySelector('div.msgs');
-        ReactDOM.render(<Msgs conv={id}/>, msgsContainer);
+        ReactDOM.render(<Msgs conv={id} />, msgsContainer);
         msgsContainer.scrollTop = msgsContainer.scrollHeight
     }, [conv]);
 

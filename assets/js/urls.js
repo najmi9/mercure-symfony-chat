@@ -1,11 +1,17 @@
+
+// Api Endpoints
 const users_url = '/api/users';
 const convs_url = '/api/convs';
 const msgs_url = (conv) => (`/api/convs/${conv}/msgs`);
 const new_conv_url = (id) => (`/api/convs/new/${id}`);
 const new_msg_url = (id) => (`/api/convs/${id}/msgs/new`);
+
+// Mercure Hub Url
 const hub_url = 'http://localhost:3000/.well-known/mercure';
-const msgTopic = (conv, userId) => (`http://mywebsite.com/msg/${conv}/users/${userId}`);
-const convTopic = (id) => (`http://mywebsite.com/convs/${id}`);
+
+//Mercure Topic
+const msgTopic = (convId) => (`http://mywebsite.com/msg/${convId}`);
+const convTopic = (userId) => (`http://mywebsite.com/convs/${userId}`);
 
 export {
     convs_url,

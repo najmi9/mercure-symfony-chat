@@ -27,7 +27,7 @@ class MessageController extends AbstractController
 
         $msgs = $msgRepo->findLast15Message($conv, 15);
 
-        return  $this->json($msgs, 200, [], [
+        return  $this->json(array_reverse($msgs), 200, [], [
             'groups' => [
                 'msg'
             ],

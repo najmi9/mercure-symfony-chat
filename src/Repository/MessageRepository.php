@@ -24,7 +24,9 @@ class MessageRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('m');
         $qb->where('m.conversation = :conv')->setParameter('conv', $conv);
+    
         $qb->setMaxResults($limit);
+        $qb->orderBy('m.id', 'DESC');
 
         return $qb->getQuery()->getResult();
     }

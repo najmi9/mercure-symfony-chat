@@ -28,7 +28,7 @@ class ConversationController extends AbstractController
             return $this->json(['msg' => 'You can not create conversation with yourself.'], 400);
         }
 
-        $conv = null;
+        $conv = $convRepo->findOneByParticipants($this->getUser(), $user);
 
         $convs = $convRepo->findAll();
         
@@ -65,43 +65,27 @@ class ConversationController extends AbstractController
      */
     public function convs(ConversationRepository $convRepo): Response
     {
-        //$this->denyAccessUnlessGranted('CONV_VIEW', );
-        // To Do SQL Improvments, findByUser.
-        // Find just last 10 convs
-        // This logic is not good
-        
-        //$convs = $convRepo->findAllConvsOfUser($this->getUser());
-
-        $convs = $convRepo->findAll();
-
-        $i = 0;
-
+        $convs = $convRepo->findLast15ConvsOfUser($this->getUser(), 15);
         $userConvs = [];
         foreach ($convs as $conv) {
-            $users = $conv->getUsers()->getValues();
-            $currentUser = $this->getUser();
-            // if there is a user in the users of a conversation.
-            if (in_array($currentUser, $users) && $i < 15) {
-                $c = [];
-                $c['id'] = $conv->getId();
-                $c['msg'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getContent(): 'Start Chat Now';
-                $c['date'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getUpdatedAt(): $conv->getUpdatedAt();
-                
-                foreach ($users as $user) {
-                    if ($user != $currentUser) {
-                        $c['user'] = [
-                            'id' => $user->getId(),
-                            'email' => $user->getemail(),
-                            'name' => $user->getName(),
-                            'avatar' => $user->getAvatar()
-                        ];
-                    }
+            $c = [];
+            $c['id'] = $conv->getId();
+            $c['msg'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getContent(): 'Start Chat Now';
+            $c['date'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getUpdatedAt(): $conv->getUpdatedAt();
+            
+            foreach ($conv->getUsers() as $user) {
+                if ($user != $this->getUser()) {
+                    $c['user'] = [
+                        'id' => $user->getId(),
+                        'email' => $user->getemail(),
+                        'name' => $user->getName(),
+                        'avatar' => $user->getAvatar()
+                    ];
                 }
-                $userConvs[] = $c;
-                $i++;
             }
+            $userConvs[] = $c;
         }
-
+    
         return $this->json($userConvs);
     }
 }

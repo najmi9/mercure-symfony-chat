@@ -20,66 +20,44 @@ class ConversationRepository extends ServiceEntityRepository
         parent::__construct($registry, Conversation::class);
     }
 
-    // /**
-    //  * @return Conversation[] Returns an array of Conversation objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findOneByParticipants(User $me, User $other)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /**
-     * @param User[] $users
-     */
-    public function findOneByParticipants(array $users): ?Conversation
-    {
-        // Every convesation is defined by his users
-        // The main goal is to find a conversation by his users
         $qb =  $this->createQueryBuilder('c');
-        $qb
-        ->join('c.users', 'p')
-        ->having('p = (:users)')
-        ->setParameter('users', $users[0])
-        ;
-        dd($qb->getQuery()->getResult());
-        return $qb->getQuery()
-        ->getOneOrNullResult();
-    }
+  
+        $qb->join('c.users', 'users', 'WITH', $qb->expr()->andX(
+            $qb->expr()->in('users', $me->getId()),
+            $qb->expr()->in('users', $other->getId())
+        ));
 
-    public function findByUser(User $user): array
-    {
-        // Each user can have many conversations
-        // Each conversation can have many users
-        // The main goal is to find all convs by the current user.
-        $qb = $this->createQueryBuilder('c');
-        $qb = $qb
-            ->leftJoin('c.users', 'users')
-            ->leftJoin('c.lastMessage', 'm')
-            ->groupBy('users')
-            ->where('users = :user')->setParameter('user', $user)
-            //->having()
-            //->where($qb->expr()->in('users', ':user'))->setParameter('user', $user)
-            ->select('c.id', 'c.createdAt', 'm.content', 'users.email')
-            ->getQuery()
-            ->getResult()
-        ;
-        return $qb;
+        dd($qb->getDQL());
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
      * @return Conversation[]
      */
-    public function findAllConvsOfUser(User $user, int $limit = 15): array
+    public function findLast15ConvsOfUser(User $user, int $limit = 15): array
     {
-        return [];
+        $qb = $this->createQueryBuilder('c');
+        // "SELECT c FROM App\Entity\Conversation c INNER JOIN c.users users WITH users IN(1)"
+        // "SELECT c FROM App\Entity\Conversation c INNER JOIN c.users users WITH 1 IN(users)"
+        $qb->join('c.users', 'users', 'WITH', $qb->expr()->in('users', $user->getId()));
+        //$qb->join('c.users', 'users', 'WITH', "{$user->getId()} IN users");
+
+
+        $qb->setMaxResults($limit);
+
+        $qb->orderBy('c.updatedAt', 'DESC');
+
+        return $qb->getQuery()->getResult();
     }
+
+    /*
+     *  // Example - $qb->expr()->in('u.id', array(1, 2, 3))
+    // Make sure that you do NOT use something similar to $qb->expr()->in('value', array('stringvalue')) 
+    // as this will cause Doctrine to throw an Exception.
+    // Instead, use $qb->expr()->in('value', array('?1')) and bind your parameter to ?1 (see section above)
+    //   public function in($x, $y); // Returns Expr\Func instance
+     */
 }

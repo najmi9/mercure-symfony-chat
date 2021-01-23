@@ -23,14 +23,24 @@ class MercureCookieGenerator
     {
         $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->secret));
 
+        $convs = $user->getConversations()->getValues();
+
+        $targets = [];
+
+        $targets[] = "http://mywebsite.com/convs/{$user->getId()}";
+
+        foreach ($convs as $conv) {
+            $targets[] = "http://mywebsite.com/msg/{$conv->getId()}";
+        }
+
         $token = $configuration->builder()
             ->withClaim('mercure', [
-                'subscribe' => [
-                "*",
-            ]])
+                'subscribe' => $targets]
+            )
             ->getToken($configuration->signer(), $configuration->signingKey())
             ->toString()
         ;
+
         return Cookie::create('mercureAuthorization')
             ->withValue($token)
             ->withPath('/.well-known/mercure')

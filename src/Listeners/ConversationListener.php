@@ -36,7 +36,6 @@ class ConversationListener
     private function getUpdate(Conversation $conv, bool $isNew = true): Update
     {
         // Do not Display my name on any conversation.
-        $currentUser = $this->security->getUser()->getUsername();
         $c = [];
         $c['new'] = $isNew;
         $c['id'] = $conv->getId();
@@ -62,7 +61,7 @@ class ConversationListener
         return new Update(
             $targets,
             $data,
-            //true
+            true
         );
     }
 }

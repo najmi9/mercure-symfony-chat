@@ -8,6 +8,7 @@ const Convs = () => {
     const fetchConvs = async () => {
         const r = await fetch(convs_url);
         const res = await r.json();
+        console.log(res);
         setConvs(res);
     }
 
@@ -15,8 +16,17 @@ const Convs = () => {
         const url = new URL(hub_url);
         const userId = parseInt(document.querySelector('div.data').dataset.user);
         url.searchParams.append('topic', convTopic(userId));
+        
+        //Find the problem  of the topics
+        
+        /**[1,2,3,4].forEach(e => {
+            console.log(e);
+            url.searchParams.append('topic', convTopic(e));
+        }) */
+
         const eventSource = new EventSource(url, { withCredentials: true });
         eventSource.onmessage = e => {
+            console.log('convs', e);
             const conv = JSON.parse(e.data);
       
             conv['user'] = conv.users.filter(u => u.id !== userId)[0]; 
@@ -41,8 +51,10 @@ const Convs = () => {
     }
 
     useEffect(() => {
-        fetchConvs();
+        fetchConvs()
+     
         const eventSource = listenToConvs();
+        
         
         return function cleanup() {
             eventSource.close();

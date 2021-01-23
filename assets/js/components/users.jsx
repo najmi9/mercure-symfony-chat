@@ -9,9 +9,7 @@ const Users = () => {
     useEffect(() => {
         fetch(users_url)
         .then(r => r.json())
-        .then(res => {
-            setUsers(res)
-        });
+        .then(res => setUsers(res));
     }, []);
 
     return(
