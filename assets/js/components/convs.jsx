@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Conv from '../components/conv';
+import Conv from './conv';
 import { convs_url, convTopic, hub_url } from '../urls';
 
 const Convs = () => {
@@ -30,10 +30,9 @@ const Convs = () => {
                     const oldData = {...oldConvs.filter(e => e.id === conv.id)[0]};
                     oldData.msg = conv.msg; 
                     oldData.date = conv.date;
-                    const index = oldConvs.findIndex(e => e.id == conv.id);
-                    oldConvs.splice(index, 1); 
-                    oldConvs.splice(0, 0, oldData);
-                    return oldConvs
+                    const cs = oldConvs.filter(c => c.id !== conv.id);
+                    cs.splice(0, 0, oldData)
+                    return cs
                 });
             }
         };

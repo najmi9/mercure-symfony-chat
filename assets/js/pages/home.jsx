@@ -1,6 +1,6 @@
 import React from 'react';
-import Convs from '../partials/convs';
-import Users from '../partials/users';
+import Convs from '../components/convs';
+import Users from '../components/users';
 
 const Home = () => {
 

@@ -57,7 +57,7 @@ class MessageListener
         return new Update(
             $targets,
             $data,
-            true
+            //true
         );
     }
 }

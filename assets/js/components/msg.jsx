@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-const Msg = ({ msg}) => (
+const Msg = React.memo(({ msg}) => (
     <div key={msg.id} id="msg">
         <div className={msg.isMyMsg ? 'my_msg' : 'not_my_msg'}>
             <div>
@@ -16,6 +16,7 @@ const Msg = ({ msg}) => (
             </div>
         </div>
     </div>
-);
+));
 
-export default Msg;
+
+export default React.memo(Msg);

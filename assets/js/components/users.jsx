@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import User from '../components/user';
+import User from './user';
 import { users_url } from '../urls';
 
 const Users = () => {

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import Msgs from '../partials/msgs';
+import React, { useCallback, useState } from 'react';
+import Msgs from './msgs';
 import ReactDOM from 'react-dom';
 import { new_conv_url } from '../urls';
 
-const User = ({ user }) => {
+const User = React.memo(({ user }) => {
     const [convId, setConvId] = useState(0);
 
-    const handleUserClick = id => {
+    const handleUserClick = useCallback((id) => {
         fetch(new_conv_url(id), {
             method: 'POST'
         })
@@ -17,7 +17,7 @@ const User = ({ user }) => {
             ReactDOM.render(<Msgs conv={res.id} />, msgsContainer);
             msgsContainer.scrollTop = msgsContainer.scrollHeight
         });
-    }
+    }, [user]);
 
     return (
         <div className="user card rounder shadow-lg p-2 m-3" onClick={() => handleUserClick(user.id)}>
@@ -27,6 +27,6 @@ const User = ({ user }) => {
             </div>
         </div>
     );
-}
+});
 
 export default User;
