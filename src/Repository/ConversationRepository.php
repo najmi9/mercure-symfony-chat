@@ -78,12 +78,8 @@ class ConversationRepository extends ServiceEntityRepository
     /**
      * @return Conversation[]
      */
-    public function findAllConvs(): array
+    public function findAllConvsOfUser(User $user, int $limit = 15): array
     {
-        $qb = $this->createQueryBuilder('c');
-
-        $qb->orderBy('c.updatedAt', 'DESc');
-
-        return $qb->getQuery()->getResult();
+        return [];
     }
 }

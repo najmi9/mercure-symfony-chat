@@ -31,12 +31,8 @@ class ConversationController extends AbstractController
         $conv = null;
 
         $convs = $convRepo->findAll();
-        $ids = [];
         
         foreach ($convs as $cv) {
-            foreach ($cv->getUsers()  as $u) {
-                $ids[] = $u->getId();
-            }
             if (in_array($user, $cv->getUsers()->getValues()) && in_array($this->getuser(), $cv->getUsers()->getValues())) {
                 $conv = $cv;
                 break;
@@ -71,13 +67,21 @@ class ConversationController extends AbstractController
     {
         //$this->denyAccessUnlessGranted('CONV_VIEW', );
         // To Do SQL Improvments, findByUser.
-        $convs = $convRepo->findAllConvs();
+        // Find just last 10 convs
+        // This logic is not good
+        
+        //$convs = $convRepo->findAllConvsOfUser($this->getUser());
+
+        $convs = $convRepo->findAll();
+
+        $i = 0;
 
         $userConvs = [];
         foreach ($convs as $conv) {
             $users = $conv->getUsers()->getValues();
             $currentUser = $this->getUser();
-            if (in_array($currentUser, $users)) {
+            // if there is a user in the users of a conversation.
+            if (in_array($currentUser, $users) && $i < 15) {
                 $c = [];
                 $c['id'] = $conv->getId();
                 $c['msg'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getContent(): 'Start Chat Now';
@@ -94,6 +98,7 @@ class ConversationController extends AbstractController
                     }
                 }
                 $userConvs[] = $c;
+                $i++;
             }
         }
 

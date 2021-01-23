@@ -5,12 +5,12 @@ import { hub_url, msgs_url, msgTopic } from '../urls';
 
 const Msgs = ({conv}) => {
     const [msgs, setMsgs] = useState([]);
+    const userId = parseInt(document.querySelector('div.data').dataset.user);
 
     useEffect(() => {
         fetch(msgs_url(conv))
         .then(res => res.json())
         .then(res => setMsgs(res));
-        const userId = parseInt(document.querySelector('div.data').dataset.user);
         const url = new URL(hub_url);
         url.searchParams.append('topic', msgTopic(conv, userId));
         const eventSource = new EventSource(url, { withCredentials: true });
@@ -21,7 +21,7 @@ const Msgs = ({conv}) => {
         eventSource.onmessage = e => {
             const data = JSON.parse(e.data);
             document.querySelector('div.msgs').scrollTop = document.querySelector('div.msgs').scrollHeight; 
-            setMsgs(msgs => [...msgs, Object.assign({}, data, {isMyMsg: userId === data.user.id})]);
+            setMsgs(msgs => [...msgs, data]);
         };
 
         return function cleanup() {
@@ -31,7 +31,7 @@ const Msgs = ({conv}) => {
 
     return (
         <>      
-            { msgs.map(m => (<Msg msg={m} key={m.id}/>)) }
+            { msgs.map(m => (<Msg msg={m} key={m.id} userId={userId}/>)) }
             <MsgForm id={conv} />
         </>
     );

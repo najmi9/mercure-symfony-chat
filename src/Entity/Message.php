@@ -6,6 +6,7 @@ use App\Repository\MessageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MessageRepository::class)
@@ -16,17 +17,20 @@ class Message
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"msg"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="messages")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"msg"})
      */
     private $user;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"msg"})
      */
     private $content;
 
@@ -37,6 +41,7 @@ class Message
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"msg"})
      */
     private $updatedAt;
 

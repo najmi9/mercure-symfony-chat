@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Message;
 use App\Entity\Conversation;
+use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,28 +21,17 @@ class MessageController extends AbstractController
     /**
      * @Route("/convs/{conv}/msgs", name="messages_of_conv", methods={"GET"})
      */
-    public function getMessages(Conversation $conv): JsonResponse
+    public function getMessages(Conversation $conv, MessageRepository $msgRepo): JsonResponse
     {
         $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
 
-        $data = [];
-        foreach ($conv->getMessages() as $msg) {
-            /** @var Message $msg */
-            $data[] = [
-                'id' => $msg->getId(),
-                'isMyMsg' => $msg->getUser() === $this->getUser(),
-                'user' => [
-                    'id' => $msg->getUser()->getId(),
-                    'name' => $msg->getUser()->getName(),
-                    'avatar' => $msg->getUser()->getAvatar(),
-                    'email' => $msg->getUser()->getEmail(),
-                ],
-                'content' => $msg->getContent(),
-                'updated' => $msg->getUpdatedAt(),
-            ];
-        }
+        $msgs = $msgRepo->findLast15Message($conv, 15);
 
-        return $this->json($data);
+        return  $this->json($msgs, 200, [], [
+            'groups' => [
+                'msg'
+            ],
+        ]);
     }
 
      /**
@@ -58,15 +48,15 @@ class MessageController extends AbstractController
         $message = new Message();
         
         $message->setCreatedAt(new \DateTime())
-                ->setUpdatedAt(new \DateTime())
-                ->setUser($this->getUser())
-                ->setContent($request->getContent())
-                ->setConversation($conv)
-            ;
+            ->setUpdatedAt(new \DateTime())
+            ->setUser($this->getUser())
+            ->setContent($request->getContent())
+            ->setConversation($conv)
+        ;
 
         $conv->setLastMessage($message)
-                ->setUpdatedAt(new \DateTime())
-            ;
+            ->setUpdatedAt(new \DateTime())
+        ;
 
         $em->persist($message);
         $em->persist($conv);

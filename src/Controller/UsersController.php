@@ -18,18 +18,6 @@ class UsersController extends AbstractController
      */
     public function index(UserRepository $userRepo): JsonResponse
     {
-        $users = [];
-        foreach($userRepo->findAll() as $u) {
-            if ($u !== $this->getUser()) {
-                $users[] = [
-                    'id' => $u->getId(),
-                    'name' => $u->getName(),
-                    'avatar' => $u->getAvatar(),
-                    'email' => $u->getEmail(),
-                ];
-            }
-        }
-
-        return $this->json($users);
+        return $this->json($userRepo->findLast15Users($this->getUser()));
     }
 }
