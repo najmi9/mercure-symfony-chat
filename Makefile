@@ -9,7 +9,7 @@ install-mercure: ##  make install-mercure DIR="/path/when/mercure/willbe/install
 	mkdir $(DIR)
 	wget https://github.com/dunglas/mercure/releases/download/v0.10.4/mercure_0.10.4_Linux_x86_64.tar.gz -P $(DIR)
 	tar -xvzf $(DIR)/mercure_0.10.4_Linux_x86_64.tar.gz
-	ll $(DIR)
+	ls $(DIR)
 
 
 
