@@ -101,7 +101,6 @@
         "compile":[
             "php bin/console doctrine:schema:update --force",
             "make install-mercure",
-            "make mercure"
         ]
     },
     "conflict": {
