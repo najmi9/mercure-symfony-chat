@@ -28,7 +28,7 @@ class ConversationController extends AbstractController
             return $this->json(['msg' => 'You can not create conversation with yourself.'], 400);
         }
 
-        $conv = $convRepo->findOneByParticipants($this->getUser(), $user);
+        $conv = null;
 
         $convs = $convRepo->findAll();
         

@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import User from './user';
 import { users_url } from '../urls';
+import useFetch from '../hooks/useFetch';
+import Loader from '../utils/loader';
 
 const Users = () => {
-
-    const [users, setUsers] = useState([]);
+    const [loading, load, users] = useFetch(users_url);
 
     useEffect(() => {
-        fetch(users_url)
-        .then(r => r.json())
-        .then(res => setUsers(res));
+        load();
     }, []);
 
     return(
         <>
-            { users.map(u => (<User key={u.id} user={u} />)) }
+            { loading && (<Loader />) }
+            { !loading && (users.map(u => (<User key={u.id} user={u} />))) }
         </>
     );
 };

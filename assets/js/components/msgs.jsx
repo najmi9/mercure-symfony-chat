@@ -1,36 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Msg from '../components/msg';
 import MsgForm from '../components/msg_form';
+import useEventSource from '../hooks/useEventSource';
+import useFetch from '../hooks/useFetch';
 import { hub_url, msgs_url, msgTopic } from '../urls';
+import Loader from '../utils/loader';
 
 const Msgs = ({conv}) => {
-    const [msgs, setMsgs] = useState([]);
     const userId = parseInt(document.querySelector('div.data').dataset.user);
- 
-    useEffect(() => {
-        fetch(msgs_url(conv))
-        .then(res => res.json())
-        .then(res => setMsgs(res));
+    const [loading, load, msgs,  setMsgs] = useFetch(msgs_url(conv));
+    const [eventSource] = useEventSource(setMsgs, msgTopic(conv));
 
-        const url = new URL(hub_url);
-
-        url.searchParams.append('topic', msgTopic(conv));
-        // Resolve the problem of topics
-        /*
-        [6, 7, 8, 11, 9, 10].forEach(e => url.searchParams.append('topic', msgTopic(e)))
-        */
-        const eventSource = new EventSource(url, { withCredentials: true });
-        
-        /**
-         * @param {MessageEvent} e 
-         */
-        eventSource.onmessage = e => {
-            console.log('msgs', e);
-            const data = JSON.parse(e.data);
-            document.querySelector('div.msgs').scrollTop = document.querySelector('div.msgs').scrollHeight; 
-            setMsgs(msgs => [...msgs, data]);
-        };
-
+    useEffect( async () => {
+        load();    
         return function cleanup() {
             eventSource.close();
         }
@@ -38,8 +20,9 @@ const Msgs = ({conv}) => {
 
     return (
         <>      
-            { msgs.map(m => (<Msg msg={m} key={m.id} userId={userId}/>)) }
-            <MsgForm id={conv} />
+            { loading && (<Loader />) }
+            { !loading && (msgs.map(m => (<Msg msg={m} key={m.id} userId={userId}/>))) }
+            { !loading && (<MsgForm id={conv} />) }
         </>
     );
 };

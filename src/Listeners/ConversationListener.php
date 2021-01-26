@@ -7,20 +7,17 @@ namespace App\Listeners;
 use App\Entity\Conversation;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ConversationListener
 {
     private SerializerInterface $serializer;
     private MessageBusInterface $bus;
-    private Security $security;
 
-    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer, Security $security)
+    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
     {
         $this->bus = $bus;
         $this->serializer = $serializer;
-        $this->security = $security;
     }
 
     public function postPersist(Conversation $conv): void

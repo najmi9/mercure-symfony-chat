@@ -21,3 +21,10 @@ run the mercure hub with :
     - User
 - Convs
     - Conv
+
+
+
+I should listen to all convs.
+
+
+Each Conv I should listen to her users !!!!!!!

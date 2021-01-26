@@ -26,17 +26,17 @@ class MercureCookieGenerator
         $convs = $user->getConversations()->getValues();
 
         $targets = [];
-
+        // I can subscribe just for my convs
         $targets[] = "http://mywebsite.com/convs/{$user->getId()}";
 
         foreach ($convs as $conv) {
-            $targets[] = "http://mywebsite.com/msg/{$conv->getId()}";
+            $targets[] = "http://mywebsite.com/msgs/{$conv->getId()}";
         }
 
         $token = $configuration->builder()
             ->withClaim('mercure', [
-                'subscribe' => $targets]
-            )
+                'subscribe' => $targets
+            ])
             ->getToken($configuration->signer(), $configuration->signingKey())
             ->toString()
         ;

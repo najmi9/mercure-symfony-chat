@@ -29,8 +29,6 @@ class ConversationRepository extends ServiceEntityRepository
             $qb->expr()->in('users', $other->getId())
         ));
 
-        dd($qb->getDQL());
-
         return $qb->getQuery()->getResult();
     }
 

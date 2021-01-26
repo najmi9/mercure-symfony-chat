@@ -1,8 +1,10 @@
 import React, { useRef } from "react";
+import useFetch from "../hooks/useFetch";
 import { new_msg_url } from "../urls";
 
 const MsgForm = ({id}) => {
     const ref = useRef(null);
+    const [loading, load]  =useFetch(new_msg_url(id), 'POST');
 
     const handleMsgSubmit = (e) => {
         e.preventDefault();
@@ -10,13 +12,9 @@ const MsgForm = ({id}) => {
             return;
         }
         
-        fetch(new_msg_url(id), {
-            method: 'POST',
-            body: ref.current.value
-        });
+        load(ref.current.value);
         ref.current.value = '';
     }
-
 
     /**
      * @param {KeyboardEvent} e 
@@ -36,7 +34,7 @@ const MsgForm = ({id}) => {
                         placeholder="Type your message" />
                     </div>
                     <div className="col-3">
-                        <button className="btn btn-sm"><i className="fas fa-paper-plane fa-2x text-primary"></i></button>
+                        <button disabled={loading} className="btn btn-sm"><i className="fas fa-paper-plane fa-2x text-primary"></i></button>
                     </div>
                 </div>
             </form>

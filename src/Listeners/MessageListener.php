@@ -30,12 +30,12 @@ class MessageListener
         $this->bus->dispatch($this->getUpdate($msg));
     }
 
-    private function getUpdate(Message $msg): ?Update
+    private function getUpdate(Message $msg): Update
     {
         $data = $this->serializer->serialize($msg, 'json', ['groups' => 'msg']);
 
         return new Update(
-            ["http://mywebsite.com/msg/{$msg->getConversation()->getId()}"],
+            ["http://mywebsite.com/msgs/{$msg->getConversation()->getId()}"],
             $data,
             true
         );
