@@ -7,12 +7,8 @@ DIR=$(CURRENT_DIR)/mercure_binary
 install-mercure: ##  make install-mercure DIR="/path/when/mercure/willbe/installed"
 	rm -rf $(DIR)
 	mkdir $(DIR)
-	sudo apt-get install redis-server
 	wget https://github.com/dunglas/mercure/releases/download/v0.10.4/mercure_0.10.4_Linux_x86_64.tar.gz -P $(DIR)
-	tar -xvzf $(DIR)/mercure_0.10.4_Linux_x86_64.tar.gz
-	ls $(DIR)
-
-
+	tar -xzf $(DIR)/mercure_0.10.4_Linux_x86_64.tar.gz
 
 mercure: 
 	$(DIR)/mercure --jwt-key='cocolesamis' --addr='https://najmi-chat.herokuapp.com:5000' --debug=1 --allow-anonymous --cors-allowed-origins="https://najmi-chat.herokuapp.com"
