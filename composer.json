@@ -16,6 +16,7 @@
         "phpdocumentor/reflection-docblock": "^5.2",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^6.0",
+        "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.1.*",
         "symfony/console": "5.1.*",
         "symfony/dotenv": "5.1.*",
@@ -96,6 +97,14 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "compile":[
+            "php bin/console doctrine:schema:update --force",
+            "rm -rf mercure_binary",
+            "mkdir mercure_binary",
+            "wget https://github.com/dunglas/mercure/releases/download/v0.10.4/mercure_0.10.4_Linux_x86_64.tar.gz -P mercure_binary",
+            "tar -xvzf mercure_binary/mercure_0.10.4_Linux_x86_64.tar.gz",
+            "./mercure_binary/mercure --jwt-key='cocolesamis' --addr='https://najmi-chat.herokuapp.com:3000' --debug=1 --allow-anonymous --cors-allowed-origins='https://najmi-chat.herokuapp.com:8000'"
         ]
     },
     "conflict": {
