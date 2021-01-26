@@ -1,12 +1,19 @@
+.PHONY: mercure install-mercure
+
+CURRENT_DIR=$(shell pwd)
+
+DIR=$(CURRENT_DIR)/mercure_binary
+
 install-mercure: ##  make install-mercure DIR="/path/when/mercure/willbe/installed"
-	rm -rf mercure_binary
-	mkdir mercure_binary
-	wget https://github.com/dunglas/mercure/releases/download/v0.10.4/mercure_0.10.4_Linux_x86_64.tar.gz -P mercure_binary
-	cd mercure_binary && tar -xvzf mercure_0.10.4_Linux_x86_64.tar.gz
+	rm -rf $(DIR)
+	mkdir $(DIR)
+	wget https://github.com/dunglas/mercure/releases/download/v0.10.4/mercure_0.10.4_Linux_x86_64.tar.gz -P $(DIR)
+	tar -xvzf $(DIR)/mercure_0.10.4_Linux_x86_64.tar.gz
+
 
 
 mercure: 
-	./mercure_binary/mercure --jwt-key='cocolesamis' --addr='localhost:3000' --debug=1 --allow-anonymous --cors-allowed-origins="http://localhost:8000"
+	$(DIR)/mercure --jwt-key='cocolesamis' --addr='https://najmi-chat.herokuapp.com:5000' --debug=1 --allow-anonymous --cors-allowed-origins="https://najmi-chat.herokuapp.com"
 
 
 server:
@@ -17,3 +24,9 @@ phpstan:
 
 csfixer:
 	php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
+
+
+git:
+	git add .
+	git commit -m "add commit"
+	git push
