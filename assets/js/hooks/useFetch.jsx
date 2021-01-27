@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const useFetch = (url, method='GET') => {
 
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
 
-    const load = async (body = null) => {
+    const load = useCallback(async (body = null) => {
         const headers = new Headers();
         headers.append("Content-Type", "text/plain");
         headers.append("Accept", "application/json");
@@ -22,7 +22,8 @@ const useFetch = (url, method='GET') => {
         setLoading(false);
         setData(res);
         return res;
-    }
+    }, [url, method]);
+
     return [
         loading,
         load, 
