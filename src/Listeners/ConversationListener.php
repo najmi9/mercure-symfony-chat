@@ -58,7 +58,7 @@ class ConversationListener
         return new Update(
             $targets,
             $data,
-            true
+            //true
         );
     }
 }

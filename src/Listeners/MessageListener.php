@@ -37,7 +37,7 @@ class MessageListener
         return new Update(
             ["http://mywebsite.com/msgs/{$msg->getConversation()->getId()}"],
             $data,
-            true
+            //true
         );
     }
 }
