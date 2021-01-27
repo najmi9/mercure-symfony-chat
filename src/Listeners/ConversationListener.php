@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Entity\Conversation;
+use Symfony\Component\Mercure\PublisherInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -13,21 +14,23 @@ class ConversationListener
 {
     private SerializerInterface $serializer;
     private MessageBusInterface $bus;
+    private PublisherInterface $publisher;
 
-    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
+    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer, PublisherInterface $publisher)
     {
         $this->bus = $bus;
+        $this->publisher = $publisher;
         $this->serializer = $serializer;
     }
 
     public function postPersist(Conversation $conv): void
     {
-        $this->bus->dispatch($this->getUpdate($conv));
+        $this->publisher->__invoke($this->getUpdate($conv));
     }
 
     public function postUpdate(Conversation $conv): void
     {
-        $this->bus->dispatch($this->getUpdate($conv, false));
+        $this->publisher->__invoke($this->getUpdate($conv, false));
     }
 
     private function getUpdate(Conversation $conv, bool $isNew = true): Update
