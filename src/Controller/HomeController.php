@@ -8,14 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use App\Mercure\MercureCookieGenerator;
-use App\Repository\UserRepository;
 
 class HomeController extends AbstractController
 {
     /**
-     * @Route("/", name="home")
+     * @Route("/{r1}/{r2}", name="home", defaults={"r1": null, "r2": null})
      */
-    public function index(MercureCookieGenerator $cookieGenerator, UserRepository $user): Response
+    public function index(MercureCookieGenerator $cookieGenerator): Response
     {
         $response =  $this->render("home/index.html.twig");
         $response->headers->setCookie($cookieGenerator->generate($this->getUser()));

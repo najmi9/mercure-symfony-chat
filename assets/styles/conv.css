@@ -19,3 +19,7 @@ div.conv:hover{
     transform: scale(1.005);
     transition: transform 0.5s;
 }
+
+a.link-to-conv{
+    text-decoration: none;
+}

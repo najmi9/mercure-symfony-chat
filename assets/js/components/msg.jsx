@@ -3,7 +3,6 @@ import moment from 'moment';
 
 const Msg = React.memo(({ msg, userId}) => (
     <div key={msg.id} id="msg">
-        {console.log('render')}
         <div className={msg.user.id === userId ? 'my_msg' : 'not_my_msg'}>
             <div>
                 <img src={msg.user.avatar} alt={msg.user.name} width="30" height="30" className="rounded-circle" />
@@ -20,4 +19,4 @@ const Msg = React.memo(({ msg, userId}) => (
 ));
 
 
-export default React.memo(Msg);
+export default Msg;
