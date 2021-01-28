@@ -6,7 +6,7 @@ import Loader from '../utils/loader';
 
 const Convs = () => {
     const userId = parseInt(document.querySelector('div.data').dataset.user);
-    const [loading, load, convs, setConvs] = useFetch(convs_url);
+    const {loading, load, data: convs, setData: setConvs} = useFetch(convs_url);
 
     const listenToMercure = useCallback(() => {
         const url = new URL(hub_url);
@@ -19,7 +19,6 @@ const Convs = () => {
          * @param {MessageEvent} e 
          */
         eventSource.onmessage = e => {
-            console.log('msg');
             const userId = parseInt(document.querySelector('div.data').dataset.user);
             const conv = JSON.parse(e.data);
             conv['user'] = conv.users.filter(u => u.id !== userId)[0]; 

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-	<div id="root" class="data" data-user="{{ app.user.id }}"></div>
+	<div id="root" class="data" data-user="{{ app.user ? app.user.id : 0}}"></div>
 {% endblock %}
 
 {% block javascripts %}

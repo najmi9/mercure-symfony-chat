@@ -23,3 +23,9 @@ div.conv:hover{
 a.link-to-conv{
     text-decoration: none;
 }
+
+i#is-online{
+    position: absolute;
+    bottom: 0;
+    left: 52%;
+}

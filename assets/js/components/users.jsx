@@ -5,7 +5,7 @@ import useFetch from '../hooks/useFetch';
 import Loader from '../utils/loader';
 
 const Users = () => {
-    const [loading, load, users] = useFetch(users_url);
+    const {loading, load, data: users} = useFetch(users_url);
 
     useEffect(() => {
         load();

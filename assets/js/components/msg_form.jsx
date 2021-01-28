@@ -4,7 +4,7 @@ import { new_msg_url } from "../urls";
 
 const MsgForm = ({id}) => {
     const ref = useRef(null);
-    const [loading, load]  =useFetch(new_msg_url(id), 'POST');
+    const {loading, load}  =useFetch(new_msg_url(id), 'POST');
 
     const handleMsgSubmit = (e) => {
         e.preventDefault();

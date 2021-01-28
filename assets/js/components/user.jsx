@@ -4,7 +4,7 @@ import useFetch from '../hooks/useFetch';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 const User = React.memo(({ user }) => {
-    const [loading, load] = useFetch(new_conv_url(user.id), 'POST');
+    const {loading, load} = useFetch(new_conv_url(user.id), 'POST');
     const [id, setId] = useState(0);
 
     useEffect(() => {

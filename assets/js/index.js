@@ -6,6 +6,8 @@ import {
   Route,
 } from "react-router-dom";
 import Conv from './pages/conv';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
 
@@ -15,6 +17,7 @@ const App = () => {
                 <Route path="/" component={Home } exact/>
                 <Route path="/convs/:id" component={Conv} exact/>
             </Switch>
+            <ToastContainer />
         </Router>
     );
 }

@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { toast } from "react-toastify";
 
 const useFetch = (url, method='GET') => {
 
@@ -18,18 +19,25 @@ const useFetch = (url, method='GET') => {
 
         setLoading(true);
         const r = await fetch(url, options);
-        const res = await r.json();
-        setLoading(false);
-        setData(res);
-        return res;
+            if (r.ok) {
+                const res = await r.json();
+                setLoading(false);
+                setData(res);
+                return res;
+            } else {
+                setLoading(false);
+                toast.error('⚠️ Sorry, Unexpected Error, Refresh tour page and Try again.');
+            }
+
+       
     }, [url, method]);
 
-    return [
+    return {
         loading,
         load, 
         data, 
         setData
-    ];
+    };
 
 }
 

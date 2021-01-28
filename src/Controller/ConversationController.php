@@ -90,4 +90,14 @@ class ConversationController extends AbstractController
     
         return $this->json($userConvs);
     }
+
+    /**
+     * @Route("/convs/{id}", name="conversation_show")
+     */
+    public function conv(Conversation $conv): JsonResponse
+    {
+        return $this->json($conv, 200, [], [
+            'groups' => 'conv_show'
+        ]);
+    }
 }

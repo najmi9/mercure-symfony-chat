@@ -22,7 +22,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"msg"})
+     * @Groups({"msg", "conv_show"})
      */
     private $id;
 
@@ -55,13 +55,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
-     * @Groups({"msg"})
+     * @Groups({"msg", "conv_show"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
-     * @Groups({"msg"})
+     * @Groups({"msg", "conv_show"})
      */
     private $avatar;
 
