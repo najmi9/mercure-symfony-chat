@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Entity\Conversation;
-use Symfony\Component\Mercure\PublisherInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -14,23 +13,21 @@ class ConversationListener
 {
     private SerializerInterface $serializer;
     private MessageBusInterface $bus;
-    private PublisherInterface $publisher;
 
-    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer, PublisherInterface $publisher)
+    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
     {
         $this->bus = $bus;
-        $this->publisher = $publisher;
         $this->serializer = $serializer;
     }
 
     public function postPersist(Conversation $conv): void
     {
-        $this->publisher->__invoke($this->getUpdate($conv));
+        $this->bus->dispatch($this->getUpdate($conv));
     }
 
     public function postUpdate(Conversation $conv): void
     {
-        $this->publisher->__invoke($this->getUpdate($conv, false));
+        $this->bus->dispatch($this->getUpdate($conv, false));
     }
 
     private function getUpdate(Conversation $conv, bool $isNew = true): Update
@@ -55,7 +52,7 @@ class ConversationListener
         $data = $this->serializer->serialize($c, 'json');
         $targets = [];
         foreach ($conv->getUsers() as $user) {
-            $targets[] = "http://mywebsite.com/convs/{$user->getId()}";
+            $targets[] = "/convs/{$user->getId()}";
         }
 
         return new Update(

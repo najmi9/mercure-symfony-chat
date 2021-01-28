@@ -1,6 +1,6 @@
 <?php
 
-#src/Mercure/JWTProvider.php
+declare(strict_types=1);
 
 namespace App\Mercure;
 

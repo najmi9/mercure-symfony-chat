@@ -35,7 +35,7 @@ class MessageListener
         $data = $this->serializer->serialize($msg, 'json', ['groups' => 'msg']);
 
         return new Update(
-            ["http://mywebsite.com/msgs/{$msg->getConversation()->getId()}"],
+            ["/msgs/{$msg->getConversation()->getId()}"],
             $data,
             //true
         );

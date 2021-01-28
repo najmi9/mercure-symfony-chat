@@ -7,11 +7,11 @@ const new_conv_url = (id) => (`/api/convs/new/${id}`);
 const new_msg_url = (id) => (`/api/convs/${id}/msgs/new`);
 
 // Mercure Hub Url
-const hub_url = 'https://najmi-chat.herokuapp.com:5000/.well-known/mercure';
+const hub_url = 'http://localhost:3000/.well-known/mercure';
 
 //Mercure Topic
-const msgTopic = (convId) => (`http://mywebsite.com/msgs/${convId}`);
-const convTopic = (userId) => (`http://mywebsite.com/convs/${userId}`);
+const msgTopic = (convId) => (`/msgs/${convId}`);
+const convTopic = (userId) => (`/convs/${userId}`);
 
 export {
     convs_url,

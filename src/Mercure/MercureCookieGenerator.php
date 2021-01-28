@@ -1,6 +1,6 @@
 <?php
 
-#src/Mercure/MercureCookieGenerator.php
+declare(strict_types=1);
 
 namespace App\Mercure;
 
@@ -27,10 +27,10 @@ class MercureCookieGenerator
 
         $targets = [];
         // I can subscribe just for my convs
-        $targets[] = "http://mywebsite.com/convs/{$user->getId()}";
+        $targets[] = "/convs/{$user->getId()}";
 
         foreach ($convs as $conv) {
-            $targets[] = "http://mywebsite.com/msgs/{$conv->getId()}";
+            $targets[] = "/msgs/{$conv->getId()}";
         }
 
         $token = $configuration->builder()

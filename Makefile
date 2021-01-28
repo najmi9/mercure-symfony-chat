@@ -2,6 +2,9 @@
 
 CURRENT_DIR=$(shell pwd)
 
+MSG="initial commit"
+BRANCH="master"
+
 DIR=$(CURRENT_DIR)/mercure_binary
 
 install-mercure: ##  make install-mercure DIR="/path/when/mercure/willbe/installed"
@@ -11,7 +14,7 @@ install-mercure: ##  make install-mercure DIR="/path/when/mercure/willbe/install
 	tar -xzf $(DIR)/mercure_0.10.4_Linux_x86_64.tar.gz
 
 mercure: 
-	$(DIR)/mercure --jwt-key='cocolesamis' --addr='https://najmi-chat.herokuapp.com:5000' --debug=1 --allow-anonymous --cors-allowed-origins="https://najmi-chat.herokuapp.com"
+	$(DIR)/mercure --jwt-key='cocolesamis' --addr='localhost:3000' --debug=1 --allow-anonymous=1 --cors-allowed-origins="http://localhost:8000"
 
 
 server:
@@ -26,5 +29,5 @@ csfixer:
 
 git:
 	git add .
-	git commit -m "add commit"
-	git push
+	git commit -m "$(MSG)"
+	git push origin $(BRANCH)
