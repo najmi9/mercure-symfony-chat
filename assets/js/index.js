@@ -8,6 +8,9 @@ import {
 import Conv from './pages/conv';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SpinningDots from '@grafikart/spinning-dots-element'
+
+customElements.define('spinning-dots', SpinningDots);
 
 const App = () => {
 
@@ -17,7 +20,7 @@ const App = () => {
                 <Route path="/" component={Home } exact/>
                 <Route path="/convs/:id" component={Conv} exact/>
             </Switch>
-            <ToastContainer />
+            <ToastContainer position='top-right'/>
         </Router>
     );
 }

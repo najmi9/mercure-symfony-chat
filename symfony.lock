@@ -359,7 +359,7 @@
         }
     },
     "symfony/mercure": {
-        "version": "v0.4.0"
+        "version": "v0.4.1"
     },
     "symfony/mercure-bundle": {
         "version": "0.2",

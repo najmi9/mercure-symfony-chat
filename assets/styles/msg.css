@@ -32,7 +32,11 @@ div#msg{
 .msgs{
     height: 70vh;
     overflow-y: auto;
-    overflow-x: hidden;
+}
+
+.row{
+    margin-left: 0;
+    margin-right: 0;
 }
 
 

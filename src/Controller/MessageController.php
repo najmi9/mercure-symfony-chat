@@ -48,7 +48,6 @@ class MessageController extends AbstractController
         }
 
         $message = new Message();
-        
         $message->setCreatedAt(new \DateTime())
             ->setUpdatedAt(new \DateTime())
             ->setUser($this->getUser())

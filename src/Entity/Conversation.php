@@ -25,17 +25,20 @@ class Conversation
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="conversations")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      * @Groups({"conv_show"})
      */
     private $users;
 
     /**
      * @ORM\ManyToOne(targetEntity=Message::class, inversedBy="conversations")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $lastMessage;
 
     /**
      * @ORM\OneToMany(targetEntity=Message::class, mappedBy="conversation")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $messages;
 

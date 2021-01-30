@@ -865,6 +865,11 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@grafikart/spinning-dots-element@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@grafikart/spinning-dots-element/-/spinning-dots-element-1.1.0.tgz#640949f1ecc132356586eda1c2f4fb58757dae43"
+  integrity sha512-GrgVm/9roqLhzuOUeTytCU/Lwk4zjBws64SziL0D8ZsGYnTISSvOZjmRvzrPkGMMN4wgKdTYRUO5pg81nPP7Bw==
+
 "@jest/types@^26.6.2":
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-26.6.2.tgz#bef5a532030e1d88a2f5a6d933f84e97226ed48e"

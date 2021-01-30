@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -29,6 +30,8 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"msg"})
+     * @Assert\Email
+     * @Assert\NotBlank
      */
     private $email;
 
@@ -40,6 +43,9 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank
+     * @Assert\NotNull
+     * @Assert\Length(min=5, max=4096)
      */
     private $password;
 
@@ -50,18 +56,25 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="users")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $conversations;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
      * @Groups({"msg", "conv_show"})
+     * @Assert\NotBlank
+     * @Assert\NotNull
+     * @Assert\Length(min=3)
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
      * @Groups({"msg", "conv_show"})
+     * @Assert\NotBlank
+     * @Assert\NotNull
+     * @Assert\Url
      */
     private $avatar;
 

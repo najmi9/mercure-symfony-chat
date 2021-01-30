@@ -1,22 +1,23 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Msg from '../components/msg';
 import MsgForm from '../components/msg_form';
-import useFetch from '../hooks/useFetch';
+import useFetchAll from '../hooks/useFetchAll';
 import { conv_url, hub_url, msgs_url, msgTopic } from '../urls';
 import Loader from '../utils/loader';
 import moment from 'moment';
+import { toast } from 'react-toastify';
+import useFetch from '../hooks/useFetch';
 
 const Conv = ({match, history}) => {
     const conv = match.params.id;
     if (!conv) {
         history.push('/');
+        toast.warn('No Conversation found.');
     }
 
-    const [conver, setConver] = useState({});
-    const [loading, setLoading] = useState(false);
-
     const userId = parseInt(document.querySelector('div.data').dataset.user);
-    const {loading: loadingMsgs, load: loadMsgs, data: msgs, setData: setMsgs} = useFetch(msgs_url(conv));
+    const {loading: loadingMsgs, load: loadMsgs, data: msgs, setData: setMsgs} = useFetchAll(msgs_url(conv));
+    const {loading, load, data: conver} = useFetch();
 
     const ref = useRef(null);
 
@@ -31,24 +32,20 @@ const Conv = ({match, history}) => {
         eventSource.onmessage = e => {
             const data = JSON.parse(e.data);
             setMsgs(msgs => [...msgs, data]);
-            ref.current.scrollTop = ref.current.scrollHeight; 
+            if (ref.current) {
+                ref.current.scrollTop = ref.current.scrollHeight; 
+            }
         }
         return eventSource;
     }, [conv]);
 
-    const loadConv = useCallback(async () => {
-        setLoading(true);
-        const r = await fetch(conv_url(conv));
-        const res = await r.json();
-        setConver(res);
-        setLoading(false);
-    }, [conv]);
-
     useEffect( async () => {
         await loadMsgs();
-        await loadConv();
+        await load(conv_url(conv), 'GET');
         const eventSource = listenToMercure(); 
-        ref.current.scrollTop = ref.current.scrollHeight; 
+        if (ref.current) {
+            ref.current.scrollTop = ref.current.scrollHeight; 
+        } 
         return function cleanup() {
             eventSource.close();
         }
@@ -62,7 +59,8 @@ const Conv = ({match, history}) => {
 
 
     return(
-        <div className="container mt-5">                               
+        <div className="container mt-5">  
+            {loading && <Loader width= {50} strokeWidth={10} minHeight={10}/>}                             
             {(!loading && conver.users) &&
                 conver.users.map(e => {
                     if (e.id !== userId) {

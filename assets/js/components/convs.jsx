@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect } from 'react';
 import Conv from './conv';
-import { convs_url, convTopic, hub_url } from '../urls';
-import useFetch from '../hooks/useFetch';
+import { convs_url, convTopic, delete_conv, hub_url } from '../urls';
+import useFetchAll from '../hooks/useFetchAll';
 import Loader from '../utils/loader';
+import useFetch from '../hooks/useFetch';
 
 const Convs = () => {
     const userId = parseInt(document.querySelector('div.data').dataset.user);
-    const {loading, load, data: convs, setData: setConvs} = useFetch(convs_url);
+    const {loading, load, data: convs, setData: setConvs} = useFetchAll(convs_url);
+    const {loading: deleteLoading, load: deleteLoad} = useFetch();
 
     const listenToMercure = useCallback(() => {
         const url = new URL(hub_url);
@@ -41,6 +43,16 @@ const Convs = () => {
         return eventSource;
     }, []);
 
+    const deleteConv = useCallback( async (e, id) => {
+        e.preventDefault();
+        const yes = window.confirm('Are you sure?');
+        if (!yes) {
+            return;
+        }
+        const res = await deleteLoad(delete_conv(id), 'DELETE');
+        setConvs(convs => convs.filter(e => e.id !== id));
+    }, []);
+
     useEffect(() => {
         load();
         const eventSource = listenToMercure();   
@@ -52,7 +64,7 @@ const Convs = () => {
     return (
         <>
             { loading && (<Loader />)}
-            { !loading &&  (convs.map(c => (<Conv key={c.id} conv={c} />)))}
+            { !loading &&  (convs.map(c => (<Conv key={c.id} conv={c} loading={deleteLoading} deleteConv={deleteConv} />)))}
         </>
     );
 }

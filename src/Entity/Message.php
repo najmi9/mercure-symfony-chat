@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=MessageRepository::class)
@@ -33,6 +34,9 @@ class Message
     /**
      * @ORM\Column(type="text")
      * @Groups({"msg"})
+     * @Assert\NotBlank
+     * @Assert\NotNull
+     * @Assert\Length(min=1)
      */
     private $content;
 
@@ -49,12 +53,13 @@ class Message
 
     /**
      * @ORM\OneToMany(targetEntity=Conversation::class, mappedBy="lastMessage")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $conversations;
 
     /**
      * @ORM\ManyToOne(targetEntity=Conversation::class, inversedBy="messages")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $conversation;
 

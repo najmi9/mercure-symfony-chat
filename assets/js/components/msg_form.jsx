@@ -1,19 +1,23 @@
 import React, { useRef } from "react";
 import useFetch from "../hooks/useFetch";
 import { new_msg_url } from "../urls";
+import Loader from "../utils/loader";
+import TextAreaField from "./field";
+import Icon from "./icon";
 
 const MsgForm = ({id}) => {
     const ref = useRef(null);
-    const {loading, load}  =useFetch(new_msg_url(id), 'POST');
+    const {loading, load}  =useFetch();
 
-    const handleMsgSubmit = (e) => {
+    const handleMsgSubmit = async (e) => {
         e.preventDefault();
         if (!ref.current.value) {
             return;
         }
         
-        load(ref.current.value);
+        await load(new_msg_url(id), 'POST', ref.current.value);
         ref.current.value = '';
+        ref.current.focus();
     }
 
     /**
@@ -26,19 +30,31 @@ const MsgForm = ({id}) => {
     }
 
     return(
-        <div>
-            <form onSubmit={handleMsgSubmit}> 
-                <div className=" mt-2 row d-flex justify-content-center align-items-center">
-                    <div className="col-9">
-                        <textarea ref={ref} name="msg" id="msg" onKeyDown={handleKeyDown} className="form-control" 
-                        placeholder="Type your message" />
-                    </div>
-                    <div className="col-3">
-                        <button disabled={loading} className="btn btn-sm"><i className="fas fa-paper-plane fa-2x text-primary"></i></button>
-                    </div>
+        <form onSubmit={handleMsgSubmit}> 
+            <div className="row d-flex justify-content-center align-items-center">
+                <div className="col-10">
+                    {loading && <Loader
+                        width= {50}
+                        strokeWidth={10}
+                        minHeight={10}
+                    />}
+                    {!loading && <TextAreaField 
+                        ref={ref} 
+                        name="msg" 
+                        id="msg" 
+                        handleKeyDown={handleKeyDown} 
+                        placeholder="Type your message" 
+                        required={true}
+                        minLength={1}
+                    />}
                 </div>
-            </form>
-        </div>
+                <div className="col-2 text-center">
+                    <button disabled={loading} className="btn btn-sm">
+                        <Icon icon="paper-plane text-primary" />    
+                    </button>
+                </div>
+            </div>
+        </form>
     );
 }
 

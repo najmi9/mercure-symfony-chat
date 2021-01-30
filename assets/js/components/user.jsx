@@ -5,19 +5,23 @@ import Loader from '../utils/loader';
 import { toast } from 'react-toastify';
 
 const User = React.memo(({ user }) => {
-    const { loading, load } = useFetch(new_conv_url(user.id), 'POST');
+    const { loading, load } = useFetch();
 
     const handleClick = useCallback(async (e) => {
         e.preventDefault();
-        const res = await load();
-        if (!res.alreadyExists) {
+        const data = await load(new_conv_url(user.id), 'POST');
+        if (!data.alreadyExists) {
             toast.success('💬 Conversation created!! you can chat now  with ' + user.name);
         }
     }, [user]);
 
     return (
         <div>
-            {loading && <Loader />}
+            {loading && <Loader width= {70}
+                         strokeWidth={15}
+                         minHeight={20}
+                    />
+            }
 
             {!loading && <div className="user card rounder shadow-lg p-2 m-3" onClick={handleClick}>
                 <div className="link-to-conv">

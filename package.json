@@ -16,6 +16,7 @@
         "heroku-postbuild": "yarn run encore production"
     },
     "dependencies": {
+        "@grafikart/spinning-dots-element": "^1.1.0",
         "@types/jest": "^26.0.20",
         "@types/node": "^14.14.22",
         "@types/react": "^17.0.0",

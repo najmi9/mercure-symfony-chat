@@ -31,11 +31,11 @@ class ConversationController extends AbstractController
         }
 
         $conv = null;
-
-        $convs = $convRepo->findAll();
         
-        foreach ($convs as $cv) {
-            if (in_array($user, $cv->getUsers()->getValues()) && in_array($this->getuser(), $cv->getUsers()->getValues())) {
+        $userConvs = $convRepo->findConvsOfUser($this->getUser());
+
+        foreach ($userConvs as $cv) {
+            if (in_array($user, $cv->getUsers()->getValues())) {
                 $conv = $cv;
                 break;
             }
@@ -47,7 +47,6 @@ class ConversationController extends AbstractController
                 'alreadyExists' => true,
             ]);
         }
-
         $conv = new Conversation();
         $conv->setCreatedAt(new \DateTime())
             ->setUpdatedAt(new \DateTime())
@@ -67,7 +66,7 @@ class ConversationController extends AbstractController
      */
     public function convs(ConversationRepository $convRepo): Response
     {
-        $convs = $convRepo->findLast15ConvsOfUser($this->getUser(), 15);
+        $convs = $convRepo->findConvsOfUser($this->getUser(), 15);
         $userConvs = [];
         foreach ($convs as $conv) {
             $c = [];
@@ -92,12 +91,26 @@ class ConversationController extends AbstractController
     }
 
     /**
-     * @Route("/convs/{id}", name="conversation_show")
+     * @Route("/convs/{id}", name="conversation_show", methods={"GET"})
      */
     public function conv(Conversation $conv): JsonResponse
     {
         return $this->json($conv, 200, [], [
             'groups' => 'conv_show'
         ]);
+    }
+
+    /**
+     * @Route("/convs/{id}/delete", name="conversation_delte", methods={"DELETE"})
+     */
+    public function delete(Conversation $conv, EntityManagerInterface $em): JsonResponse
+    {
+        try {
+            $em->remove($conv);
+            $em->flush();
+        } catch (\Exception $e) {
+             return $this->json(['error' => 'Unexpected Error'], 500);
+        }
+        return $this->json([], 204);
     }
 }
