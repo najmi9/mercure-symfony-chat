@@ -42,8 +42,7 @@ const Conv = ({match, history}) => {
         const res = await r.json();
         setConver(res);
         setLoading(false);
-
-    }, []);
+    }, [conv]);
 
     useEffect( async () => {
         await loadMsgs();

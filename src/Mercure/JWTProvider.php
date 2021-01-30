@@ -10,7 +10,7 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 
 class JWTProvider
 {
-    private $secret;
+    private string $secret;
     //récupérer les utilisateur et faire le publish en fonction
     public function __construct(string $secret)
     {
@@ -24,7 +24,7 @@ class JWTProvider
         return $configuration->builder()
             ->withClaim('mercure', [
                 'publish' => [
-                    '*'
+                    '*',
                 ]
             ])
             ->getToken($configuration->signer(), $configuration->signingKey())

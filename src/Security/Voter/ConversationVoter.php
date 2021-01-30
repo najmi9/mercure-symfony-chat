@@ -35,7 +35,6 @@ class ConversationVoter extends Voter
                 }
 
                 return false;
-                break;
             case 'CONV_VIEW':
                 $usersConv = $subject->getUsers()->getValues();
                 if (in_array($user, $usersConv)) {
@@ -43,7 +42,6 @@ class ConversationVoter extends Voter
                 }
 
                 return false;
-                break;
         }
 
         return false;

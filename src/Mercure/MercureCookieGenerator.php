@@ -35,7 +35,8 @@ class MercureCookieGenerator
 
         $token = $configuration->builder()
             ->withClaim('mercure', [
-                'subscribe' => $targets
+                'subscribe' => $targets,
+                'publish' => $targets,
             ])
             ->getToken($configuration->signer(), $configuration->signingKey())
             ->toString()

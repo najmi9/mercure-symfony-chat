@@ -22,6 +22,7 @@ class ConversationRepository extends ServiceEntityRepository
         parent::__construct($registry, Conversation::class);
     }
 
+    /*
     public function findOneByParticipants(User $me, User $other)
     {
         $qb =  $this->createQueryBuilder('c');
@@ -33,6 +34,7 @@ class ConversationRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+    */
 
     /**
      * @return Conversation[]
@@ -41,7 +43,6 @@ class ConversationRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('c');
         // "SELECT c FROM App\Entity\Conversation c INNER JOIN c.users users WITH users IN(1)"
-        // "SELECT c FROM App\Entity\Conversation c INNER JOIN c.users users WITH 1 IN(users)"
         $qb->join('c.users', 'users', 'WITH', $qb->expr()->in('users', $user->getId()));
         //$qb->join('c.users', 'users', 'WITH', "{$user->getId()} IN users");
 

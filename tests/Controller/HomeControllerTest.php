@@ -6,10 +6,14 @@ namespace App\Tests\Controller;
 
 use PHPUnit\Framework\TestCase;
 
-class ControllerHomeTest extends TestCase
+/**
+ * @internal
+ * @coversNothing
+ */
+final class HomeControllerTest extends TestCase
 {
-    public function test_home_page()
+    public function testTest(): void
     {
-        $this->assertEquals(1, 2);
+        static::assertSame(12, 2);
     }
 }

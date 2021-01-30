@@ -29,3 +29,5 @@ todo.md
 .circleci/*
 .phpintel/*
 mercure_binary
+.idea
+php-cs-fixer

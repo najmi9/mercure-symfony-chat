@@ -20,11 +20,11 @@ mercure:
 server:
 	php -S localhost:8000 -t public
 
-phpstan:
+php-stan:
 	vendor/bin/phpstan analyse -c phpstan.neon.dist
 
-csfixer:
-	php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
+cs-fixer:
+	./php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
 
 
 git:
