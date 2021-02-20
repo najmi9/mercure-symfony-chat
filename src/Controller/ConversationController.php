@@ -25,17 +25,15 @@ class ConversationController extends AbstractController
      */
     public function new(User $user, ConversationRepository $convRepo, EntityManagerInterface $em): JsonResponse
     {
-        //$conv = $convRepo->findOneByParticipants([$this->getUser(), $user]);
         if ($user === $this->getUser()) {
             return $this->json(['msg' => 'You can not create conversation with yourself.'], 400);
         }
 
         $conv = null;
-        
         $userConvs = $convRepo->findConvsOfUser($this->getUser());
 
         foreach ($userConvs as $cv) {
-            if (in_array($user, $cv->getUsers()->getValues())) {
+            if ($cv->getUsers()->contains($user)) {
                 $conv = $cv;
                 break;
             }
@@ -66,7 +64,7 @@ class ConversationController extends AbstractController
      */
     public function convs(ConversationRepository $convRepo): Response
     {
-        $convs = $convRepo->findConvsOfUser($this->getUser(), 15);
+        $convs = $convRepo->findConvsOfUser($this->getUser(), /* limit */15);
         $userConvs = [];
         foreach ($convs as $conv) {
             $c = [];
