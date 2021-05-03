@@ -15,7 +15,12 @@
                 </div>
             {% endif %}
 
-            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <div class="d-flex justify-content-between">
+                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <span>
+                    <a href="{{ path('app_register') }}" class="btn btn-success">Create New Account</a>
+                </span>
+            </div>
             <label for="inputEmail">Email</label>
             <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
             <label for="inputPassword">Password</label>

@@ -72,8 +72,6 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
      * @Groups({"msg", "conv_show"})
-     * @Assert\NotBlank
-     * @Assert\NotNull
      * @Assert\Url
      */
     private $avatar;

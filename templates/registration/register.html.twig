@@ -11,9 +11,9 @@
     <h1>Register</h1>
 
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.avatar) }}
-        {{ form_row(registrationForm.name) }}
-        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.avatar, {attr: {placeholder: 'https://randomuser.me/api/portraits/med/men/77.jpg', value:'https://randomuser.me/api/portraits/med/men/55.jpg'}}) }}
+        {{ form_row(registrationForm.name, {attr: {placeholder: 'Name ....', value: 'Fer'}}) }}
+        {{ form_row(registrationForm.email,{attr: {value: 'fer@gmail.com'}}) }}
         {{ form_row(registrationForm.password, {
             label: 'Password'
         }) }}
