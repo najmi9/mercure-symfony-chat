@@ -1,0 +1,11 @@
+<div>
+    <h4>Najmi DEV</h4>
+    <h1>Hi {{ username }}</h1>
+    <div>
+        <p>
+            Thanks for creating an account in Najmi DEV.
+            To confirm you account click the link bellow:
+            <a href="{{ absolute_url(path('user_email_confirmation', {confirmationToken: token})) }}">Confirm my email</a>
+        </p>
+    </div>
+</div>

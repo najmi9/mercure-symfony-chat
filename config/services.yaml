@@ -30,9 +30,11 @@ services:
     App\Mercure\MercureCookieGenerator:
         arguments:
             $secret: '%env(MERCURE_JWT_KEY)%'
+  
     App\Mercure\JWTProvider:
         arguments:
             $secret: '%env(MERCURE_JWT_KEY)%'
+  
     App\Listeners\ConversationListener:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: 'postPersist', entity: 'App\Entity\Conversation'}
@@ -43,3 +45,19 @@ services:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: 'postPersist', entity: 'App\Entity\Message'}
             - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Entity\Message'}
+
+    App\Services\FileUploader:
+      arguments:
+        $projectDir: '%kernel.project_dir%'
+
+    App\Infrastructure\GeoLocation\GoogleGeoLocation:
+      arguments:
+        $googleMapKey: '%env(resolve:GOOGLE_MAP_KEY)%'
+    
+    App\Infrastructure\Notification\EmailNotifier:
+      arguments:
+        $admin_email: '%env(ADMIN_EMAIL)%'
+    
+    App\Infrastructure\Queue\Subscriber\FailedMessageSubscriber:
+      arguments:
+        $admin_email: '%env(ADMIN_EMAIL)%'

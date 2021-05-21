@@ -1,7 +1,7 @@
 import React from 'react';
 import className from '../utils/classNames';
 
-const TextAreaField = React.forwardRef(({help, name, children, error, handleKeyDown, required, minLength}, ref) => {
+const TextAreaField = React.forwardRef(({help, name, children, error, handleKeyDown, required, minLength, ...props}, ref) => {
     if (error) {
         help = error
     }
@@ -13,11 +13,11 @@ const TextAreaField = React.forwardRef(({help, name, children, error, handleKeyD
                 name={name} 
                 ref={ref} 
                 id={name} 
-                rows="2" 
                 className="form-control" 
                 required={required}
                 minLength={minLength}
                 onKeyDown={handleKeyDown} 
+                {...props}
             />
             {help && <div className="help-block"> {help} </div>}
         </div>

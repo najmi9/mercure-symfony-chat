@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Forgot Password {% endblock %}
+
+{% block body %}
+    <div class="login" id="particles-js">
+        <div class="container mt-5 bg-light">
+            {{ form_start(form)}}
+            <div class="pb-13 pt-lg-0 pt-5">
+                <h3 class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">
+                    Forgot Password
+                </h3>
+            
+            </div>
+            <div class="form-group">
+                {{ form_row(form.email, {'attr':{'class':'form-control-solid h-auto p-6 rounded-lg font-size-h6', 'placeholder':'Email'}}) }}
+            </div>
+
+            <div class="form-group d-flex flex-wrap pb-lg-0">
+                <button type="submit"
+                    class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-4">
+                    Save
+                </button>
+                <a href="{{ path('user_login') }}"
+                class="btn btn-light-primary font-weight-bolder font-size-h6 px-8 py-4 my-3">
+                    Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,1 @@
+import '../../styles/errors/error500.css';

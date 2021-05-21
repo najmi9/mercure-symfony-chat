@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 const Conv = React.memo(({ conv, deleteConv, loading }) => {
 
     return (
-        <Link Link to={"/convs/"+conv.id} className="d-block conv card rounder shadow-lg p-2 m-1">
+        <Link to={"/convs/"+conv.id} className="d-block conv card rounder shadow-lg p-2 m-1" style={{ textDecoration: 'none' }}>
             <div className="conv-header">
-                    <img src={conv.user.avatar} 
-                    alt={conv.user.name} className="rounded-circle"/> 
+                    <img src={ conv.user.picture ? `/uploads/users/${conv.user.picture}` : '/build/images/default-avatar.png'} 
+                    alt={conv.user.name}  width="50" height="50" className="rounded-circle"/> 
                     <span className="font-weight-bolder text-success h6"> {conv.user.name} </span>
                 <button disabled={loading} onClick={(e) => deleteConv(e, conv.id)} className="btn btn-sm delete-btn">
                     <i className="fas text-danger fa-trash"></i>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error 500</title>
+</head>
+
+<body>
+    <h2 style="color: red;"> {{ msg }} </h2>
+    <div>
+        There is an error in "<strong> {{ uri }} </strong>" route.
+        the trace is :
+        <p style="background-color: black; color:white; padding:5px;">
+            "{{ trace }}"
+        </p>
+        with the message "{{ msg }}"
+    </div>
+</body>
+
+</html>

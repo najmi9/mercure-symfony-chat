@@ -1,0 +1,16 @@
+version: '3.8'
+
+networks: 
+    dev:
+
+services: 
+    #Mailhog
+    mailhog:
+        image: mailhog/mailhog
+        container_name: mailhog-container
+        restart: always
+        ports:
+            - 8025:8025 # web ui
+            - 1025:1025 # smtp server
+        networks:
+            - dev

@@ -1,0 +1,7 @@
+<div>
+    <h1>Najmi DEV</h1>
+    <h4>Hi {{ username }}: </h4>
+    click this link <a href="{{ absolute_url(path('user_reset_password', {confirmationToken: token})) }}">
+        reset my password
+    </a>
+</div>

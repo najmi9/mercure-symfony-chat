@@ -2,48 +2,64 @@
 
 {% block title %}Log in!{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('login') }}
+{% endblock %}
+
 {% block body %}
-    <div class="container">
-        <form method="post">
-            {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
+    <div class="login" id="particles-js">
+        <div class="container mt-5 bg-light">
+            <form method="post">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-            {% if app.user %}
-                <div class="mb-3">
-                    You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as
+                        {{ app.user.username }},
+                        <a href="{{ path('user_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between">
+                    <h1 class="h3 mb-3 font-weight-bolder border-bottom p-2">Please sign in</h1>
+                    <span>
+                        <a href="{{ path('user_register') }}" class="btn btn-success">
+                            <i class="fas fa-user-plus"></i> Create New Account </a>
+                    </span>
                 </div>
-            {% endif %}
-
-            <div class="d-flex justify-content-between">
-                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-                <span>
-                    <a href="{{ path('app_register') }}" class="btn btn-success">Create New Account</a>
-                </span>
-            </div>
-            <label for="inputEmail">Email</label>
-            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
-            <label for="inputPassword">Password</label>
-            <input type="password" name="password" id="inputPassword" class="form-control" required>
-
-            <input type="hidden" name="_csrf_token"
-                value="{{ csrf_token('authenticate') }}"
-            >
-
-            {#
-                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                See https://symfony.com/doc/current/security/remember_me.html
-
-                <div class="checkbox mb-3">
-                    <label>
-                        <input type="checkbox" name="_remember_me"> Remember me
-                    </label>
+                <div class="form-group">
+                    <label for="inputEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
                 </div>
-            #}
+                
+                <div class="form-group">
+                    <label for="inputPassword"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control" required>
+                    <a href="{{ path('user_send_mail') }}" target="_blank">Forget Password <i class="fas fa-external-link-alt"></i></a>
+                </div>
 
-            <button class="btn btn-lg btn-primary" type="submit">
-                Sign in
-            </button>
-        </form>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" name="_remember_me" id="rememeberme">
+                    <label class="form-check-label" for="rememeberme">Remember me. </label>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary" type="submit">
+                        <i class="fas fa-sign-in-alt"></i> Sign in
+                    </button>
+                </div>
+
+            </form>
+        </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('login') }}
 {% endblock %}

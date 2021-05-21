@@ -6,20 +6,22 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Security\AppAuthenticator;
+use App\Infrastructure\Notification\EmailNotifierInterface;
+use App\Services\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/auth/register", name="app_register")
+     * @Route("/auth/register", name="user_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, AppAuthenticator $authenticator): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, EmailNotifierInterface $emailNotifier,
+    TokenGeneratorInterface $tokenGenerator, FileUploader $fileUploader): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -35,16 +37,27 @@ class RegistrationController extends AbstractController
             );
 
             $entityManager = $this->getDoctrine()->getManager();
+            $token = $tokenGenerator->generateToken();
+            $user->setConfirmationToken($token);
+            $fileName = $fileUploader->uploadUserImage($user->getFile());
+            $user->setPicture($fileName);
+
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,
-                $request,
-                $authenticator,
-                'main' // firewall name in security.yaml
-            );
+
+            $email = $emailNotifier->createEmail('Email Confirmation', 'security/emails/confirm_email.html.twig', [
+                'username' => $user->getName(),
+                'token' => $token,
+            ]);
+
+            $email->to($user->getEmail());
+
+            $emailNotifier->send($email);
+
+           $this->addFlash('success', 'Check Your Email To Verify Your Account.');
+
+           return $this->redirectToRoute('user_login');
         }
 
         return $this->render('registration/register.html.twig', [

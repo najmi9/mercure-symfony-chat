@@ -45,7 +45,7 @@ class ConversationListener
                 'id' => $user->getId(),
                 'email' => $user->getEmail(),
                 'name' => $user->getName(),
-                'avatar' => $user->getAvatar(),
+                'picture' => $user->getPicture(),
             ];
         }
         

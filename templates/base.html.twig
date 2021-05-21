@@ -15,9 +15,26 @@
 </head>
 
 <body>
+    {% for label, messages in app.flashes %}
+        <div class="container-fluid">
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    <div class="alert-heading font-weight-bolder text-center"> 
+                        {{ message | raw }}
+                    </div>
+                    <button type="button" class="close" 
+                            data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
     {% block body %}{% endblock %}
+
+    {% block javascripts %}
     
-    {% block javascripts %}{% endblock %}
+    {% endblock %}
 </body>
 
 </html>

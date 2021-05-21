@@ -2,22 +2,61 @@
 
 {% block title %}Register{% endblock %}
 
+{% block stylesheets %}
+    {{ encore_entry_link_tags('register') }}
+{% endblock %}
+
 {% block body %}
- <div class="container">
-       {% for flashError in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
-    {% endfor %}
+    <div class="login" id="particles-js">
+        <div class="container mt-5 bg-light">
+            {% for flashError in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+            {% endfor %}
 
-    <h1>Register</h1>
+            <div class="d-flex justify-content-between border-bottom pb-2 border-2">
+                <h3 class="font-weight-bolder">Register</h3>
+                <div>
+                    <a href="{{ path('user_login') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Sign in
+                    </a>
+                </div>
+            </div>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.avatar, {attr: {placeholder: 'https://randomuser.me/api/portraits/med/men/77.jpg', value:'https://randomuser.me/api/portraits/med/men/55.jpg'}}) }}
-        {{ form_row(registrationForm.name, {attr: {placeholder: 'Name ....', value: 'Fer'}}) }}
-        {{ form_row(registrationForm.email,{attr: {value: 'fer@gmail.com'}}) }}
-        {{ form_row(registrationForm.password, {
-            label: 'Password'
-        }) }}
-        <button type="submit" class="btn btn-primary">Register</button>
-    {{ form_end(registrationForm) }}
- </div>
+            {{ form_start(registrationForm) }}
+                <div class="form-group mt-2">
+                    {{ form_label(registrationForm.file) }}
+                    <div class="image-wrapper">
+                        <img src="{{ asset('build/images/default-avatar.png') }}" class="picture-src"/>
+                        {{ form_widget(registrationForm.file) }}
+                    </div>
+                    {{ form_errors(registrationForm.file) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_row(registrationForm.name, {attr: {placeholder: 'Name ....', value: 'Fer'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(registrationForm.email,{attr: {value: 'fer@gmail.com'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(registrationForm.password, {
+                        label: 'Password',
+                        attr: {
+                            placeholder: 'Password ...'
+                        }
+                    }) }}
+                </div>
+                    
+                <div class="form-group mt-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-rocket text-warning"></i> Register
+                    </button>
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('register') }}
 {% endblock %}

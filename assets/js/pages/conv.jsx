@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import Msg from '../components/msg';
 import MsgForm from '../components/msg_form';
 import useFetchAll from '../hooks/useFetchAll';
@@ -51,20 +51,13 @@ const Conv = ({match, history}) => {
         }
     }, [conv]);
 
-    const goBack = useCallback(() => {
-        if (history.length > 1) {
-            history.goBack();
-        }
-    }, [conv])
-
-
     return(
         <div className="container mt-5">  
-            {loading && <Loader width= {50} strokeWidth={10} minHeight={10}/>}                             
+            {loading && <Loader width= {50} strokeWidth={10} minHeight={10}/>}
             {(!loading && conver.users) &&
                 conver.users.map(e => {
                     if (e.id !== userId) {
-                        return (<ConvHeader key={e.id} user={e} date={new Date(conver.updatedAt)} goBack={goBack} />);
+                        return (<ConvHeader key={e.id} user={e} date={new Date(conver.updatedAt)} />);
                     }
                 })
             }
@@ -77,17 +70,16 @@ const Conv = ({match, history}) => {
     );
 }
 
-const ConvHeader = ({user, date, goBack}) => {
+const ConvHeader = ({user, date}) => {
     return(
         <div className="row d-flex justify-content-center align-items-center">
-            <div className="col-4">
-                <button className="btn btn-sm" onClick={goBack}><i className="fas fa-arrow-left"></i>back </button>
-            </div>
-            <div className="col-4 text-center">
-                <img src={user.avatar} width="50" height="50" alt={user.name} className="text-left rounded-circle" style={{'position': 'relative'}} /> 
+            <div className="col-6 text-left">
+                <img src={user.picture ? `/uploads/users/${user.picture}`: '/build/images/default-avatar.png'} width="50" height="50" 
+                alt={user.name} className="text-left rounded-circle" 
+                style={{'position': 'relative'}} /> 
                 <i className="fas fa-circle text-success" id="is-online"></i>
             </div>
-            <div className="col-4 text-right">
+            <div className="col-6 text-right">
                 <span className="text-success"> {user.name} </span> <br />
                 <small className="text-muted text-italic">
                     { moment(date).from() }

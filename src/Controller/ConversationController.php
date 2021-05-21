@@ -78,7 +78,7 @@ class ConversationController extends AbstractController
                         'id' => $user->getId(),
                         'email' => $user->getemail(),
                         'name' => $user->getName(),
-                        'avatar' => $user->getAvatar()
+                        'picture' => $user->getPicture()
                     ];
                 }
             }

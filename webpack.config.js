@@ -14,6 +14,15 @@ Encore
     // only needed for CDN's or sub-directory deploy
     //.setManifestKeyPrefix('build/')
 
+    .copyFiles({
+        from: './assets/images/',
+        // optional target path, relative to the output dir
+        //to: '/keen/[path][name].[hash:8].[ext]',
+        // if versioning is enabled, add the file hash too
+        to: 'images/[path][name].[ext]',
+        // only copy files matching this pattern
+        //pattern: /\.(ttf|otf|eot|svg|woff(2)?)$/
+    })
     /*
      * ENTRY CONFIG
      *
@@ -21,6 +30,11 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
+    .addEntry('login', './assets/pages/login.js')
+    .addEntry('register', './assets/pages/register.js')
+    .addEntry('error403', './assets/js/errors/error403.js')
+    .addEntry('error404', './assets/js/errors/error404.js')
+    .addEntry('error500', './assets/js/errors/error500.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     //.enableStimulusBridge('./assets/controllers.json')

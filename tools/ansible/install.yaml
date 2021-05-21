@@ -1,0 +1,13 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/
+- name: Server Installation
+  hosts: remote
+  become: yes
+
+  pre_tasks:
+    - name: "APT | Update & Upgrade"
+      become: yes
+      apt:
+        upgrade: dist
+        update_cache: yes
+  tasks:
