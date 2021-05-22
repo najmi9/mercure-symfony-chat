@@ -48,7 +48,9 @@ class ConversationListener
                 'picture' => $user->getPicture(),
             ];
         }
-        
+
+        $c['ownerId'] = $conv->getOwnerId();
+
         $data = $this->serializer->serialize($c, 'json');
         $targets = [];
         foreach ($conv->getUsers() as $user) {

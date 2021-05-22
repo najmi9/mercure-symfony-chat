@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ConversationRepository::class)
+ * @ORM\HasLifecycleCallbacks
  */
 class Conversation
 {
@@ -32,13 +33,13 @@ class Conversation
 
     /**
      * @ORM\ManyToOne(targetEntity=Message::class, inversedBy="conversations")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $lastMessage;
 
     /**
      * @ORM\OneToMany(targetEntity=Message::class, mappedBy="conversation")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $messages;
 
@@ -52,6 +53,11 @@ class Conversation
      * @Groups({"conv_show"})
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $ownerId;
 
     public function __construct()
     {
@@ -135,9 +141,12 @@ class Conversation
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAt(): self
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime();
 
         return $this;
     }
@@ -147,9 +156,25 @@ class Conversation
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function setUpdatedAt(): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new \DateTime();
+
+        return $this;
+    }
+
+    public function getOwnerId(): ?int
+    {
+        return $this->ownerId;
+    }
+
+    public function setOwnerId(?int $ownerId): self
+    {
+        $this->ownerId = $ownerId;
 
         return $this;
     }

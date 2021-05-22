@@ -45,11 +45,12 @@ class ConversationController extends AbstractController
                 'alreadyExists' => true,
             ]);
         }
+
         $conv = new Conversation();
-        $conv->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
-            ->addUser($this->getUser())
-            ->addUser($user);
+        $conv->addUser($this->getUser())
+            ->addUser($user)
+            ->setOwnerId($this->getUser()->getId())
+        ;
         $em->persist($conv);
         $em->flush();
 
@@ -93,6 +94,8 @@ class ConversationController extends AbstractController
      */
     public function conv(Conversation $conv): JsonResponse
     {
+        $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
+
         return $this->json($conv, 200, [], [
             'groups' => 'conv_show'
         ]);
@@ -103,10 +106,13 @@ class ConversationController extends AbstractController
      */
     public function delete(Conversation $conv, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted('CONV_EDIT', $conv);
+
         try {
             $em->remove($conv);
             $em->flush();
         } catch (\Exception $e) {
+            dd($e);
              return $this->json(['error' => 'Unexpected Error'], 500);
         }
         return $this->json([], 204);

@@ -27,7 +27,7 @@ class MessageListener
 
     public function postUpdate(Message $msg): void
     {
-        $this->bus->dispatch($this->getUpdate($msg));
+        // $this->bus->dispatch($this->getUpdate($msg));
     }
 
     private function getUpdate(Message $msg): Update

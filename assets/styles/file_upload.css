@@ -1,0 +1,26 @@
+input.add-image{
+    cursor: pointer;
+    opacity: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+i.image-icon{
+    z-index: -1;
+    font-size: 25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 100%;
+    max-width: 100%;
+}
+
+span.img-wrapper{
+    position: relative;
+    width: 47px;
+    height: 47px;
+    margin-left: 2px;
+    margin-right: 2px;
+}

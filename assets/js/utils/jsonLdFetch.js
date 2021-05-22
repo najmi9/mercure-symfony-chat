@@ -1,3 +1,10 @@
+/**
+ * 
+ * @param {string} url 
+ * @param {string} method 
+ * @param {string} data 
+ * @returns 
+ */
 const jsonLdFetch  = async (url, method = 'GET', data=null) => {
     const params = {
         method: method,

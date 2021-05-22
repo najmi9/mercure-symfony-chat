@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=MessageRepository::class)
+ * @ORM\HasLifecycleCallbacks
  */
 class Message
 {
@@ -53,7 +54,7 @@ class Message
 
     /**
      * @ORM\OneToMany(targetEntity=Conversation::class, mappedBy="lastMessage")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * ORM\JoinColumn(onDelete="SET NULL")
      */
     private $conversations;
 
@@ -102,9 +103,12 @@ class Message
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAt(): self
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime();
 
         return $this;
     }
@@ -114,9 +118,13 @@ class Message
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    /**
+     * @ORM\PreUpdate
+     * @ORM\PrePersist
+     */
+    public function setUpdatedAt(): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new \DateTime();
 
         return $this;
     }

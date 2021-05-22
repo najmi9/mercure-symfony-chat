@@ -5,6 +5,7 @@ const convs_url = '/api/convs';
 const msgs_url = conv => (`/api/convs/${conv}/msgs`);
 const new_conv_url = id => (`/api/convs/new/${id}`);
 const new_msg_url = id => (`/api/convs/${id}/msgs/new`);
+const edit_msg_url = id => (`/api/messages/${id}/update`);
 const conv_url = id => (`/api/convs/${id}`);
 const delete_conv = id => (`/api/convs/${id}/delete`);
 
@@ -25,5 +26,6 @@ export {
     hub_url,
     users_url,
     conv_url,
-    delete_conv
+    delete_conv,
+    edit_msg_url
 }

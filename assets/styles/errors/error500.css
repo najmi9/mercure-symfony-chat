@@ -34,10 +34,10 @@ body {
   margin: 0 auto;
   padding: 1em 1em;
   text-align: center;
-  background: url("https://www.dropbox.com/s/xq0841cp3icnuqd/flame.png?raw=1")
+  background: url("https://www.dropbox.com/s/xq0841cp3icnuqd/flame.jpeg?raw=1")
       no-repeat top 10em center/128px 128px,
     transparent
-      url("https://www.dropbox.com/s/w7qqrcvhlx3pwnf/desktop-pc.png?raw=1")
+      url("https://www.dropbox.com/s/w7qqrcvhlx3pwnf/desktop-pc.jpeg?raw=1")
       no-repeat top 13em center/128px 128px;
 }
 

@@ -16,12 +16,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @IsGranted("ROLE_USER")
- * @Route("/api")
+ * @Route("/api", name="messages_")
  */
 class MessageController extends AbstractController
 {
     /**
-     * @Route("/convs/{conv}/msgs", name="messages_of_conv", methods={"GET"})
+     * @Route("/convs/{conv}/msgs", name="of_conv", methods={"GET"})
      */
     public function getMessages(Conversation $conv, MessageRepository $msgRepo): JsonResponse
     {
@@ -37,9 +37,9 @@ class MessageController extends AbstractController
     }
 
      /**
-     * @Route("/convs/{id}/msgs/new", name="messages_new", methods={"POST"})
+     * @Route("/convs/{id}/msgs/new", name="new", methods={"POST"})
      */
-    public function index(Conversation $conv, Request $request, EntityManagerInterface $em): JsonResponse
+    public function new(Conversation $conv, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
 
@@ -48,21 +48,53 @@ class MessageController extends AbstractController
         }
 
         $message = new Message();
-        $message->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime())
+        $message
             ->setUser($this->getUser())
             ->setContent($request->getContent())
             ->setConversation($conv)
         ;
 
-        $conv->setLastMessage($message)
-            ->setUpdatedAt(new \DateTime())
-        ;
+        $conv->setLastMessage($message);
 
         $em->persist($message);
         $em->persist($conv);
         $em->flush();
 
         return $this->json(['id' => $message->getId()]);
+    }
+
+    /**
+     * @Route("/messages/{id}/delete", name="delete", methods={"DELETE"})
+     */
+    public function delete(Message $message, EntityManagerInterface $em): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('DELETE_MSG', $message, 'Only the admins or the message owner can delete it.');
+
+        $em->remove($message);
+        $em->flush();
+
+        return $this->json([], 204);
+    }
+
+    /**
+     * @Route("/messages/{id}/update", name="edit", methods={"PUT"})
+     */
+    public function edit(Request $request, Message $message, EntityManagerInterface $em): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('EDIT_MSG', $message, 'Only the admins or the message owner can edit it.');
+        $content = $request->getContent();
+
+        if (empty($content)) {
+            return $this->json(['msg' => 'Content Required'], 400);
+        }
+
+        $message->setContent($content);
+
+        $em->persist($message);
+        $em->flush();
+
+        return $this->json($message, 200, [], [
+            'groups' => 'msg',
+        ]);
     }
 }

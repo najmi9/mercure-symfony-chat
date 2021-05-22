@@ -7,6 +7,7 @@ import Loader from '../utils/loader';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import useFetch from '../hooks/useFetch';
+import notify from '../utils/notify';
 
 const Conv = ({match, history}) => {
     const conv = match.params.id;
@@ -25,12 +26,13 @@ const Conv = ({match, history}) => {
         const url = new URL(hub_url);
         url.searchParams.append('topic', msgTopic(conv));
         const eventSource = new EventSource(url, { withCredentials: true });
-    
-        /**
-         * @param {MessageEvent} e 
-         */
+
         eventSource.onmessage = e => {
             const data = JSON.parse(e.data);
+            if (userId !== data.user.id) {
+                notify();
+            }
+
             setMsgs(msgs => [...msgs, data]);
             if (ref.current) {
                 ref.current.scrollTop = ref.current.scrollHeight; 
@@ -46,6 +48,7 @@ const Conv = ({match, history}) => {
         if (ref.current) {
             ref.current.scrollTop = ref.current.scrollHeight; 
         } 
+
         return function cleanup() {
             eventSource.close();
         }
@@ -63,7 +66,7 @@ const Conv = ({match, history}) => {
             }
             <div className="msgs" ref={ref}>
                 { loadingMsgs && (<Loader />) }
-                { !loadingMsgs && (msgs.map(m => (<Msg msg={m} key={m.id} userId={userId}/>))) }
+                { !loadingMsgs && (msgs.map(m => (<Msg msg={m} key={m.id} userId={userId} setMsgs={setMsgs} conv={conv}/>))) }
                 { !loadingMsgs && (<MsgForm id={conv} />) }
             </div>
         </div>
@@ -74,7 +77,7 @@ const ConvHeader = ({user, date}) => {
     return(
         <div className="row d-flex justify-content-center align-items-center">
             <div className="col-6 text-left">
-                <img src={user.picture ? `/uploads/users/${user.picture}`: '/build/images/default-avatar.png'} width="50" height="50" 
+                <img src={user.picture ? `/uploads/users/${user.picture}`: '/build/images/default-avatar.jpeg'} width="50" height="50" 
                 alt={user.name} className="text-left rounded-circle" 
                 style={{'position': 'relative'}} /> 
                 <i className="fas fa-circle text-success" id="is-online"></i>

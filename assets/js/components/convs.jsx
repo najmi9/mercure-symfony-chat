@@ -4,6 +4,7 @@ import { convs_url, convTopic, delete_conv, hub_url } from '../urls';
 import useFetchAll from '../hooks/useFetchAll';
 import Loader from '../utils/loader';
 import useFetch from '../hooks/useFetch';
+import notify from '../utils/notify';
 
 const Convs = () => {
     const userId = parseInt(document.querySelector('div.data').dataset.user);
@@ -21,8 +22,11 @@ const Convs = () => {
          * @param {MessageEvent} e 
          */
         eventSource.onmessage = e => {
-            const userId = parseInt(document.querySelector('div.data').dataset.user);
             const conv = JSON.parse(e.data);
+            if (conv.ownerId !== userId) {
+                notify();
+            }
+
             conv['user'] = conv.users.filter(u => u.id !== userId)[0]; 
             delete conv['users'];
             if (conv.new) {

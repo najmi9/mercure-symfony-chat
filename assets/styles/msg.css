@@ -1,5 +1,5 @@
 .my_msg{
-    float: left;  
+    float: left;
 }
 .not_my_msg{
     float: right;
@@ -19,14 +19,13 @@
 
 div#msg{
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    overflow: auto;
     margin-top: 3px;
-    height: 70px;
     border-radius: 5px;
     margin-left: 5px;
     margin-right: 5px;
     z-index: -1;
     background-color: rgba(55, 158, 177, 0.2);
-   
 }
 
 .msgs{
@@ -39,4 +38,21 @@ div#msg{
     margin-right: 0;
 }
 
+img[data-toggle="modal"]:hover{
+    cursor: pointer;
+    transform: scale(1.02);
+    content: 'click me';
+}
 
+span.eye{
+    font-size: 25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+div.image-wrapper{
+    position: relative;
+}
