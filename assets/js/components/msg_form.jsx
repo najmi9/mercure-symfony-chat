@@ -2,17 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import { edit_msg_url, new_msg_url } from "../urls";
 import Loader from "../utils/loader";
-import TextAreaField from "./field";
-import Icon from "./icon";
+import TextAreaField from "../ui/field";
+import Icon from "../ui/icon";
 import 'emoji-mart/css/emoji-mart.css'
 import '../../styles/msg_form.css';
 import '../../styles/file_upload.css';
-import PickerEmoji from "./EmojiPicker";
-import Image from "./image";
+import PickerEmoji from "../ui/EmojiPicker";
+import Image from "../ui/image";
+import FileUpload from "./fileUpload";
+import AudioUpload from "./audioUpload";
 
 const MsgForm = ({id, msg={}, onUpdate=null}) => {
     const ref = useRef(null);
-
     const {loading, load}  =useFetch();
     const [showEmojis, setShowEmojis] = useState(false);
 
@@ -54,23 +55,6 @@ const MsgForm = ({id, msg={}, onUpdate=null}) => {
         ref.current.value += e.native;
     };
 
-    const handleChange = (e) => {
-        readURL(e.currentTarget);
-    }
-
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            
-            input.files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = async function (e) {
-                    await postData(e.target.result);
-                }
-                reader.readAsDataURL(file);
-            })
-        }
-    }
-
     useEffect(() => {
         if (msg && msg.content && ref.current) {
             ref.current.value = msg.content;
@@ -103,22 +87,20 @@ const MsgForm = ({id, msg={}, onUpdate=null}) => {
                             />)
                         }
                     </div>
-                    <div className="col-3">
-                        <div className="mt-4">
+                    <div className="col-3  d-flex justify-content-center align-items-center">
+                        <div>
                             {!msg.content?.includes('image') && <button type="button" disabled={loading} onClick={() => setShowEmojis(!showEmojis)} 
-                            className="btn btn-lg border">
+                            className="btn border">
                                 <Icon icon="grin-beam text-warning" />
                             </button>}
 
-                            <span className="img-wrapper btn btn-lg border">
-                                <input disabled={loading} multiple={true} accept="image/png, image/jpeg, jpeg" className="btn btn-lg add-image"
-                                onChange={handleChange} type="file"/>
-                                <i className="fas fa-image text-success image-icon"></i>
-                            </span>
+                            <FileUpload loading={loading} postData={postData}/>
 
-                            {!msg.content?.includes('image') && <button disabled={loading} type="submit" className="btn btn-lg border">
+                            {!msg.content?.includes('image') && <button disabled={loading} type="submit" className="btn border">
                                 <Icon icon="paper-plane text-primary" />
                             </button>}
+
+                            { navigator.mediaDevices && <AudioUpload  loading={loading} postData={postData}/>}
                         </div>
                     </div>
                 </div>

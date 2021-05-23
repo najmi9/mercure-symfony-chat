@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import Msg from '../components/msg';
 import MsgForm from '../components/msg_form';
 import useFetchAll from '../hooks/useFetchAll';
-import { conv_url, hub_url, msgs_url, msgTopic } from '../urls';
+import { conv_url, hub_url, msgs_url, msgTopic, userImage } from '../urls';
 import Loader from '../utils/loader';
 import moment from 'moment';
 import { toast } from 'react-toastify';
@@ -77,7 +77,7 @@ const ConvHeader = ({user, date}) => {
     return(
         <div className="row d-flex justify-content-center align-items-center">
             <div className="col-6 text-left">
-                <img src={user.picture ? `/uploads/users/${user.picture}`: '/build/images/default-avatar.jpeg'} width="50" height="50" 
+                <img src={userImage(user.picture)} width="50" height="50" 
                 alt={user.name} className="text-left rounded-circle" 
                 style={{'position': 'relative'}} /> 
                 <i className="fas fa-circle text-success" id="is-online"></i>

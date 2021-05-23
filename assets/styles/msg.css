@@ -24,8 +24,11 @@ div#msg{
     border-radius: 5px;
     margin-left: 5px;
     margin-right: 5px;
+    padding-top: 9px;
+    padding-left: 3px;
+    padding-bottom: 5px;
     z-index: -1;
-    background-color: rgba(55, 158, 177, 0.2);
+    background-color: rgba(177, 158, 177, 0.2);
 }
 
 .msgs{
@@ -41,7 +44,14 @@ div#msg{
 img[data-toggle="modal"]:hover{
     cursor: pointer;
     transform: scale(1.02);
-    content: 'click me';
+    border-radius: 5px!important;
+    text-align: center;
+}
+
+
+img[data-toggle="modal"]{
+    border-radius: 5px!important;
+    text-align: center;
 }
 
 span.eye{
@@ -55,4 +65,10 @@ span.eye{
 
 div.image-wrapper{
     position: relative;
+}
+
+audio{
+    border-radius: 7px;
+    margin-left: 15px;
+    margin-top: 5px;
 }

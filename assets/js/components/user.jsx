@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { new_conv_url } from '../urls';
+import { new_conv_url, userImage } from '../urls';
 import useFetch from '../hooks/useFetch';
 import Loader from '../utils/loader';
 import { toast } from 'react-toastify';
@@ -22,7 +22,7 @@ const User = React.memo(({ user }) => {
             {!loading && <div className="user card rounder shadow-lg p-2 m-3" onClick={handleClick}>
                 <div className="link-to-conv">
                     <div className="conv-header">
-                        <img src={user.picture ? `/uploads/users/${user.picture}`:  '/build/images/default-avatar.jpeg'} alt={user.name} className="rounded-circle"
+                        <img src={userImage(user.picture)} alt={user.name} className="rounded-circle"
                          width="40" height="40" />
                         <span className="font-weight-bolder text-success h6"> {user.name} </span>
                     </div>
