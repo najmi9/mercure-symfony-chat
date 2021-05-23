@@ -6,7 +6,7 @@ input.add-image{
     height: 100%;
 }
 
-i.image-icon{
+.image-icon{
     z-index: -1;
     font-size: 22px;
     position: absolute;

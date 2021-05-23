@@ -34,7 +34,8 @@ class MercureSubscriber implements EventSubscriberInterface
         $channels = $event->getChannels();
         $data = $event->getData();
 
-        $update = new Update($channels, $this->serializer->serialize($data, 'json'));
+        // until I refresh the page and i can see my updates me the one who push
+        $update = new Update($channels, $this->serializer->serialize($data, 'json'), false);
         $this->enqueue->enqueue(HubInterface::class, 'publish', [$update]);
     }
 }

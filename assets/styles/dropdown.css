@@ -1,0 +1,8 @@
+.show-actions {
+    position: absolute;
+    top: 8px;
+    left: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

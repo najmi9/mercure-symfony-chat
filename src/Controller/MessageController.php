@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Message;
 use App\Entity\Conversation;
+use App\Entity\Message;
+use App\Infrastructure\Mercure\Events\MercureEvent;
 use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -25,21 +27,20 @@ class MessageController extends AbstractController
      */
     public function getMessages(Request $request, Conversation $conv, MessageRepository $msgRepo): JsonResponse
     {
-        /**
-         * @todo Why 2 Requests
-         */
         $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
 
         $currentPage = $request->query->getInt('page', 1);
         $max = $request->query->getInt('max', 15);
-
+        if ($max > 15) {
+           $max = 15;
+        }
         $offset = $currentPage * $max - $max;
 
-        $msgs = $msgRepo->findLast15Message($conv, $max, $offset);
+        $msgs = $msgRepo->findLastMessages($conv, $max, $offset);
 
         return  $this->json([
             'data' => array_reverse($msgs),
-            'count' => \count($msgRepo->findLast15Message($conv)),
+            'count' => (int) $msgRepo->countMessages($conv),
         ], 200, [], [
             'groups' => [
                 'msg'
@@ -77,9 +78,18 @@ class MessageController extends AbstractController
     /**
      * @Route("/messages/{id}/delete", name="delete", methods={"DELETE"})
      */
-    public function delete(Message $message, EntityManagerInterface $em): JsonResponse
+    public function delete(Message $message, EntityManagerInterface $em, EventDispatcherInterface $dispatcher): JsonResponse
     {
+        /**
+         * @todo Notify the conversation that the last message is updated.
+         */
         $this->denyAccessUnlessGranted('DELETE_MSG', $message, 'Only the admins or the message owner can delete it.');
+
+        $dispatcher->dispatch(new MercureEvent(["/msgs/{$message->getConversation()->getId()}"], [
+            'id' => $message->getId(),
+            'isDeleted' => true,
+            ])
+        );
 
         $em->remove($message);
         $em->flush();
@@ -92,6 +102,9 @@ class MessageController extends AbstractController
      */
     public function edit(Request $request, Message $message, EntityManagerInterface $em): JsonResponse
     {
+        /**
+         * @todo Notify the conversation that the last message is updated.
+         */
         $this->denyAccessUnlessGranted('EDIT_MSG', $message, 'Only the admins or the message owner can edit it.');
         $content = $request->getContent();
 

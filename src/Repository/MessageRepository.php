@@ -22,7 +22,7 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
-    public function findLast15Message(Conversation $conv, int $limit = 0, int $offset = 0): array
+    public function findLastMessages(Conversation $conv, int $limit = 0, int $offset = 0): array
     {
         $qb = $this->createQueryBuilder('m');
         $qb->where('m.conversation = :conv')->setParameter('conv', $conv);
@@ -35,5 +35,14 @@ class MessageRepository extends ServiceEntityRepository
         $qb->orderBy('m.id', 'DESC');
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function countMessages(Conversation $conv): string
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->where('m.conversation = :conv')->setParameter('conv', $conv);
+        $qb->select('count(m.id)');
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

@@ -11,7 +11,7 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 class JWTProvider
 {
     private string $secret;
-    //récupérer les utilisateur et faire le publish en fonction
+
     public function __construct(string $secret)
     {
         $this->secret = $secret;

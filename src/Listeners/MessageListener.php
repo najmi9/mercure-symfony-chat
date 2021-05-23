@@ -5,39 +5,43 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Entity\Message;
-use Symfony\Component\Mercure\Update;
-use Symfony\Component\Messenger\MessageBusInterface;
+use App\Infrastructure\Mercure\Events\MercureEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class MessageListener
 {
     private SerializerInterface $serializer;
-    private MessageBusInterface $bus;
+    private EventDispatcherInterface $dispatcher;
 
-    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
+    public function __construct(EventDispatcherInterface $dispatcher, SerializerInterface $serializer)
     {
-        $this->bus = $bus;
+        $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
     }
 
     public function postPersist(Message $msg): void
     {
-        $this->bus->dispatch($this->getUpdate($msg));
+        $this->dispatcher->dispatch(new MercureEvent(["/msgs/{$msg->getConversation()->getId()}"], $this->getData($msg)));
     }
 
     public function postUpdate(Message $msg): void
     {
-        // $this->bus->dispatch($this->getUpdate($msg));
+        $this->dispatcher->dispatch(new MercureEvent(["/msgs/{$msg->getConversation()->getId()}"], $this->getData($msg, true)));
     }
 
-    private function getUpdate(Message $msg): Update
+    private function getData(Message $msg, bool $update = false): array
     {
         $data = $this->serializer->serialize($msg, 'json', ['groups' => 'msg']);
 
-        return new Update(
-            ["/msgs/{$msg->getConversation()->getId()}"],
-            $data,
-            //true
-        );
+        $data = json_decode($data, true);
+
+        if ($update) {
+            $data['isNew'] = false;
+        } else {
+            $data['isNew'] = true;
+        }
+
+        return $data;
     }
 }

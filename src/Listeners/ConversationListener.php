@@ -5,32 +5,31 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Entity\Conversation;
-use Symfony\Component\Mercure\Update;
-use Symfony\Component\Messenger\MessageBusInterface;
+use App\Infrastructure\Mercure\Events\MercureEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ConversationListener
 {
-    private SerializerInterface $serializer;
-    private MessageBusInterface $bus;
+    private EventDispatcherInterface $dispatcher;
 
-    public function __construct(MessageBusInterface $bus, SerializerInterface $serializer)
+    public function __construct(EventDispatcherInterface $dispatcher, SerializerInterface $serializer)
     {
-        $this->bus = $bus;
+        $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
     }
 
     public function postPersist(Conversation $conv): void
     {
-        $this->bus->dispatch($this->getUpdate($conv));
+        $this->pushData($conv);
     }
 
     public function postUpdate(Conversation $conv): void
     {
-        $this->bus->dispatch($this->getUpdate($conv, false));
+        $this->pushData($conv, false);
     }
 
-    private function getUpdate(Conversation $conv, bool $isNew = true): Update
+    private function pushData(Conversation $conv, bool $isNew = true): void
     {
         // Do not Display my name on any conversation.
         $c = [];
@@ -51,16 +50,12 @@ class ConversationListener
 
         $c['ownerId'] = $conv->getOwnerId();
 
-        $data = $this->serializer->serialize($c, 'json');
         $targets = [];
+
         foreach ($conv->getUsers() as $user) {
             $targets[] = "/convs/{$user->getId()}";
         }
 
-        return new Update(
-            $targets,
-            $data,
-            //true
-        );
+        $this->dispatcher->dispatch(new MercureEvent($targets, $c));
     }
 }

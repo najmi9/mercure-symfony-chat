@@ -1,26 +1,14 @@
 import React, { useState } from 'react';
-import moment from 'moment';
 import Image from '../ui/image';
-import useFetch from '../hooks/useFetch';
-import Loader from '../utils/loader';
 import MsgForm from './msg_form';
-import { delete_msg_url, userImage } from '../urls';
+import { userImage } from '../urls';
 import Audio from '../ui/audio';
+import fromNow from '../lib/moment';
+import '../../styles/dropdown.css';
 
-const Msg = React.memo(({ msg, userId, setMsgs, conv}) => {
-    const {load, loading} = useFetch();
+const Msg = React.memo(({ msg, userId, conv, onDelete}) => {
 
     const [state, setState] = useState('IDLE');
-
-    const handleDelete = async () => {
-        await load(delete_msg_url(msg.id), 'DELETE');
-        setMsgs(msgs => msgs.filter(m => m !== msg));
-    }
-
-    const onUpdate = async (oldMsg, newMsg) => {
-        setMsgs(msgs => msgs.map(m => m === oldMsg ? newMsg : m))
-        setState('IDLE');
-    }
 
     const mine = id => userId === id;
 
@@ -35,40 +23,48 @@ const Msg = React.memo(({ msg, userId, setMsgs, conv}) => {
 
     return(
         <div id="msg">
-            {state === 'IDLE' && <>
-                {!loading  && <div className={mine(msg.user.id) ? 'my_msg' : 'not_my_msg'}>
+            {state !== 'EDIT' && <>
+                <div className={mine(msg.user.id) ? 'my_msg' : 'not_my_msg'}>
                     <img src={userImage(msg.user.picture)}
                     width="30" height="30" className="rounded-circle" />
 
                     <span className="user_name"> { msg.user.name } </span>
 
                     <small className="text-muted">
-                        {moment(new Date(msg.updatedAt)).from()}
+                        { fromNow(msg.updatedAt) }
                     </small>
 
-                    {mine(msg.user.id) && <div className="btn-group dropright">
-                        <button type="button" className="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i className="fas fa-ellipsis-v"></i>
+                    {mine(msg.user.id) && <button className="btn btn-sm" onClick={() => setState(state === 'BTNS' ? 'IDLE': 'BTNS')}>
+                        <svg width="30" height="30" viewBox="0 0 44 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 3.46875C12.1284 3.46875 4.125 10.1988 4.125 18.5C4.125 26.8012 12.1284 33.5312 22 33.5312C31.8716 33.5312 39.875 26.8012 39.875 18.5C39.875 10.1988 31.8716 3.46875 22 3.46875ZM14.2656 20.3789C13.8237 20.3789 13.3917 20.2687 13.0243 20.0623C12.6568 19.8558 12.3704 19.5624 12.2013 19.219C12.0322 18.8757 11.988 18.4979 12.0742 18.1334C12.1604 17.769 12.3732 17.4342 12.6857 17.1714C12.9982 16.9086 13.3963 16.7297 13.8297 16.6572C14.2631 16.5847 14.7124 16.6219 15.1207 16.7641C15.529 16.9063 15.8779 17.1472 16.1234 17.4561C16.369 17.7651 16.5 18.1284 16.5 18.5C16.5 18.9983 16.2646 19.4762 15.8456 19.8286C15.4265 20.1809 14.8582 20.3789 14.2656 20.3789V20.3789ZM22 20.3789C21.5581 20.3789 21.1261 20.2687 20.7586 20.0623C20.3912 19.8558 20.1048 19.5624 19.9357 19.219C19.7666 18.8757 19.7223 18.4979 19.8086 18.1334C19.8948 17.769 20.1076 17.4342 20.4201 17.1714C20.7325 16.9086 21.1307 16.7297 21.5641 16.6572C21.9975 16.5847 22.4468 16.6219 22.8551 16.7641C23.2633 16.9063 23.6123 17.1472 23.8578 17.4561C24.1033 17.7651 24.2344 18.1284 24.2344 18.5C24.2344 18.9983 23.999 19.4762 23.5799 19.8286C23.1609 20.1809 22.5926 20.3789 22 20.3789V20.3789ZM29.7344 20.3789C29.2925 20.3789 28.8605 20.2687 28.493 20.0623C28.1256 19.8558 27.8392 19.5624 27.6701 19.219C27.501 18.8757 27.4567 18.4979 27.5429 18.1334C27.6291 17.769 27.842 17.4342 28.1544 17.1714C28.4669 16.9086 28.865 16.7297 29.2985 16.6572C29.7319 16.5847 30.1812 16.6219 30.5894 16.7641C30.9977 16.9063 31.3467 17.1472 31.5922 17.4561C31.8377 17.7651 31.9688 18.1284 31.9688 18.5C31.9687 18.9983 31.7333 19.4762 31.3143 19.8286C30.8953 20.1809 30.327 20.3789 29.7344 20.3789V20.3789Z" fill="black"/>
+                        </svg>
+                    </button>}
+
+                    {state === 'BTNS' && <div className="show-actions">
+                        <button type="button" onClick={onDelete} className="btn btn-sm">
+                            <svg width="15" height="25" viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.88639 9.33334H18.3205L17.338 25.0938C17.2931 25.8134 16.976 26.4887 16.4515 26.9822C15.927 27.4758 15.2344 27.7503 14.5149 27.75H5.69346C4.97396 27.7503 4.2814 27.4758 3.75687 26.9822C3.23234 26.4887 2.91529 25.8134 2.87032 25.0938L1.88639 9.33334ZM20 5.08334V7.91668H0.208344V5.08334H4.44942V3.66668C4.44942 2.91523 4.7473 2.19456 5.27754 1.66321C5.80777 1.13185 6.52693 0.833344 7.2768 0.833344H12.9316C13.6814 0.833344 14.4006 1.13185 14.9308 1.66321C15.4611 2.19456 15.7589 2.91523 15.7589 3.66668V5.08334H20ZM7.2768 5.08334H12.9316V3.66668H7.2768V5.08334Z" fill="black"/>
+                            </svg>
                         </button>
-                        <div className="dropdown-menu">
-                            <button className="dropdown-item" type="button" onClick={handleDelete}><i className="fas fa-trash-alt"></i></button>
-                           { typeof content === 'string' && <button className="dropdown-item" type="button" onClick={() => setState('EDIT')}>
-                               <i className="fas fa-pen-alt"></i>
-                            </button>}
-                        </div>
+                        {typeof content === 'string' && <button type="button" onClick={() => setState('EDIT')} className="btn btn-sm">
+                            <svg width="27" height="20" viewBox="0 0 27 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M23.8333 0H3.16668C1.74197 0 0.583344 0.897 0.583344 2V20L5.75001 16H23.8333C25.2581 16 26.4167 15.103 26.4167 14V2C26.4167 0.897 25.2581 0 23.8333 0ZM9.62372 12.987H7.04168V10.988L14.1846 5.466L16.7653 7.465L9.62372 12.987ZM17.9834 6.523L15.4013 4.524L17.3698 3.001L19.9519 5L17.9834 6.523Z" fill="black"/>
+                            </svg>
+                        </button>}
                     </div>}
 
                     <div className="msg-text">
                         { content }
                     </div>
-                </div>}
-                {loading && <Loader width={60} minHeight={60} strokeWidth={7}/>}
+                </div>
             </>}
 
-            {state === 'EDIT' && <MsgForm  id={conv} msg={msg} onUpdate={onUpdate}/>}
+            {state === 'EDIT' && <MsgForm  id={conv} msg={msg} onUpdate={() => setState('IDLE')}/>}
 
-            { state === 'EDIT' && <button className="btn btn-secondary" type="button" onClick={() => setState('IDLE')}>
-                <i className="fas fa-times"></i>
+            { state === 'EDIT' && <button className="btn btn-sm" type="button" onClick={() => setState('IDLE')}>
+                <svg width="30" height="30" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 2C14.8355 2 11.7421 2.93838 9.11088 4.69649C6.4797 6.45459 4.42894 8.95345 3.21793 11.8771C2.00693 14.8007 1.69008 18.0177 2.30744 21.1214C2.92481 24.2251 4.44866 27.0761 6.6863 29.3137C8.92394 31.5513 11.7749 33.0752 14.8786 33.6926C17.9823 34.3099 21.1993 33.9931 24.1229 32.7821C27.0466 31.5711 29.5454 29.5203 31.3035 26.8891C33.0616 24.2579 34 21.1645 34 18C34 13.7565 32.3143 9.68687 29.3137 6.68629C26.3131 3.68571 22.2435 2 18 2ZM26 24.1C26.2652 24.3652 26.4142 24.7249 26.4142 25.1C26.4142 25.4751 26.2652 25.8348 26 26.1C25.7348 26.3652 25.3751 26.5142 25 26.5142C24.6249 26.5142 24.2652 26.3652 24 26.1L18 20.1L12 26.12C11.8687 26.2513 11.7128 26.3555 11.5412 26.4266C11.3696 26.4976 11.1857 26.5342 11 26.5342C10.8143 26.5342 10.6304 26.4976 10.4588 26.4266C10.2872 26.3555 10.1313 26.2513 10 26.12C9.86869 25.9887 9.76451 25.8328 9.69344 25.6612C9.62237 25.4896 9.58579 25.3057 9.58579 25.12C9.58579 24.9343 9.62237 24.7504 9.69344 24.5788C9.76451 24.4072 9.86869 24.2513 10 24.12L16 18.08L9.83001 11.86C9.56479 11.5948 9.41579 11.2351 9.41579 10.86C9.41579 10.4849 9.56479 10.1252 9.83001 9.86C10.0952 9.59478 10.4549 9.44579 10.83 9.44579C11.2051 9.44579 11.5648 9.59478 11.83 9.86L18 16.1L24.17 9.93C24.3013 9.79868 24.4572 9.69451 24.6288 9.62344C24.8004 9.55237 24.9843 9.51579 25.17 9.51579C25.3557 9.51579 25.5396 9.55237 25.7112 9.62344C25.8828 9.69451 26.0387 9.79868 26.17 9.93C26.3013 10.0613 26.4055 10.2172 26.4766 10.3888C26.5476 10.5604 26.5842 10.7443 26.5842 10.93C26.5842 11.1157 26.5476 11.2996 26.4766 11.4712C26.4055 11.6428 26.3013 11.7987 26.17 11.93L20 18.08L26 24.1Z" fill="black"/>
+                </svg>
             </button>}
 
         </div>

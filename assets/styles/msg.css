@@ -18,16 +18,12 @@
 }
 
 div#msg{
+    position: relative;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     overflow: auto;
-    margin-top: 3px;
     border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
-    padding-top: 9px;
-    padding-left: 3px;
-    padding-bottom: 5px;
-    z-index: -1;
+    margin: 3px 5px 0 5px;
+    padding: 9px 0 5px 3px;
     background-color: rgba(177, 158, 177, 0.2);
 }
 

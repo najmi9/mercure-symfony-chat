@@ -12,7 +12,7 @@ use App\Mercure\MercureCookieGenerator;
 class HomeController extends AbstractController
 {
     /**
-     * @Route("/", name="home")
+     * @Route("/", name="home", methods={"GET"})
      */
     public function index(MercureCookieGenerator $cookieGenerator): Response
     {

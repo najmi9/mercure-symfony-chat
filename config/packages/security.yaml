@@ -27,5 +27,6 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
 
         - { path: ^/auth, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/sitemap, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/, roles: ROLE_USER }

@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Conversation;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use App\Infrastructure\Mercure\Events\MercureEvent;
 use App\Repository\ConversationRepository;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -66,23 +68,22 @@ class ConversationController extends AbstractController
      */
     public function convs(Request $request,  ConversationRepository $convRepo): Response
     {
-        /**
-         * @todo this method not working
-         */
         $currentPage = $request->query->getInt('page', 1);
         $max = $request->query->getInt('max', 15);
-
-        $offset = $currentPage * $max - $max;
 
         if ($max > 15) {
             $max = 15;
         }
 
+        $offset = $currentPage * $max - $max;
+
         $convs = $convRepo->findConvsOfUser($this->getUser(), $max, $offset);
+
         $userConvs = [];
         foreach ($convs as $conv) {
             $c = [];
             $c['id'] = $conv->getId();
+            $c['ownerId'] = $conv->getOwnerId();
             $c['msg'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getContent(): 'Start Chat Now';
             $c['date'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getUpdatedAt(): $conv->getUpdatedAt();
             
@@ -101,7 +102,7 @@ class ConversationController extends AbstractController
 
         return $this->json([
             'data' => $userConvs,
-            'count' => \count($convRepo->findConvsOfUser($this->getUser())),
+            'count' => (int) $convRepo->countConvsOfUser($this->getUser()),
         ]);
     }
 
@@ -120,10 +121,23 @@ class ConversationController extends AbstractController
     /**
      * @Route("/convs/{id}/delete", name="conversation_delte", methods={"DELETE"})
      */
-    public function delete(Conversation $conv, EntityManagerInterface $em): JsonResponse
+    public function delete(Conversation $conv, EntityManagerInterface $em, EventDispatcherInterface $dispatcher): JsonResponse
     {
-        $this->denyAccessUnlessGranted('CONV_EDIT', $conv);
+        // only the owner can delete a conversation not every one.
+        // if deleted, delete it also from the other participiant
+        $this->denyAccessUnlessGranted('CONV_DELETE', $conv);
+        $targets = [];
 
+        foreach ($conv->getUsers() as $user) {
+            $targets[] = "/convs/{$user->getId()}";
+        }
+
+        $dispatcher->dispatch(new MercureEvent($targets, [
+            'id' => $conv->getId(),
+            'isDeleted' => true,
+            ])
+        );
+    
         try {
             $em->remove($conv);
             $em->flush();
@@ -131,6 +145,7 @@ class ConversationController extends AbstractController
             dd($e);
              return $this->json(['error' => 'Unexpected Error'], 500);
         }
+
         return $this->json([], 204);
     }
 }

@@ -10,39 +10,29 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 
 /**
  * Instead of directly storing a JWT token in the .env, we create a service that will provide the token used by the Publisher object.
+ * use a subscriber key and a publisher key
  */
 class JWTProvider
 {
-   /*  private string $mercure_secret;
-    private string $subscriber_key;
+    private string $secret;
 
-    public function __construct(string $mercure_secret, string $subscriber_key)
+    /* public function __construct(string $secret)
     {
-        $this->mercure_secret = $mercure_secret;
-        $this->subscriber_key = $subscriber_key;
-    }
+        $this->secret = $secret;
+    } */
 
     public function __invoke(): string
     {
-        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->mercure_secret));
+        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->secret));
 
         return $configuration->builder()
-            ->withClaim('mercure', ['publish' => ['*']])
+            ->withClaim('mercure', [
+                'publish' => [
+                    '*',
+                ]
+            ])
             ->getToken($configuration->signer(), $configuration->signingKey())
             ->toString()
         ;
     }
-
-    public function getTokenForWaitingRoom(string $token): string
-    {
-        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->subscriber_key));
-
-        return $configuration->builder()
-            ->withClaim('mercure', ['subscribe' => [
-                "http://beta.gvetsoft.com/en/next-visit/{$token}",
-            ]])
-            ->getToken($configuration->signer(), $configuration->signingKey())
-            ->toString()
-        ;
-    } */
 }

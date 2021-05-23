@@ -3,7 +3,6 @@ import Convs from '../components/convs';
 import Users from '../components/users';
 
 const Home = () => {
-
     return (
         <section className="container">
             <div className="row d-flex justify-content-center">

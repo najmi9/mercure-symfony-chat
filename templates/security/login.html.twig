@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Log in!
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -24,33 +25,50 @@
                 {% endif %}
 
                 <div class="d-flex justify-content-between">
-                    <h1 class="h3 mb-3 font-weight-bolder border-bottom p-2">Please sign in</h1>
+                    <h1 class="h3 mb-3 font-weight-bolder border-bottom p-2">
+                        <svg width="31" height="29" viewBox="0 0 31 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.5625 2.4375V7.3125L15.5 9.75V4.875H29.0625V34.125H15.5V29.25L13.5625 31.6875V36.5625H31V2.4375H13.5625Z" fill="black"/>
+                        <path d="M19.375 19.5L9.6875 9.75V14.625H0V24.375H9.6875V29.25L19.375 19.5Z" fill="black"/>
+                        </svg>
+                        Please sign in
+                    </h1>
                     <span>
                         <a href="{{ path('user_register') }}" class="btn btn-success">
-                            <i class="fas fa-user-plus"></i> Create New Account </a>
+                            <svg width="25" height="25" viewbox="0 0 56 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M37.1875 9.84374C37.1875 9.56402 37.3258 9.29576 37.5719 9.09796C37.8181 8.90017 38.1519 8.78905 38.5 8.78905H42.4375V5.62499C42.4375 5.34527 42.5758 5.07701 42.8219 4.87921C43.0681 4.68142 43.4019 4.5703 43.75 4.5703C44.0981 4.5703 44.4319 4.68142 44.6781 4.87921C44.9242 5.07701 45.0625 5.34527 45.0625 5.62499V8.78905H49C49.3481 8.78905 49.6819 8.90017 49.9281 9.09796C50.1742 9.29576 50.3125 9.56402 50.3125 9.84374C50.3125 10.1235 50.1742 10.3917 49.9281 10.5895C49.6819 10.7873 49.3481 10.8984 49 10.8984H45.0625V14.0625C45.0625 14.3422 44.9242 14.6105 44.6781 14.8083C44.4319 15.0061 44.0981 15.1172 43.75 15.1172C43.4019 15.1172 43.0681 15.0061 42.8219 14.8083C42.5758 14.6105 42.4375 14.3422 42.4375 14.0625V10.8984H38.5C38.1519 10.8984 37.8181 10.7873 37.5719 10.5895C37.3258 10.3917 37.1875 10.1235 37.1875 9.84374V9.84374ZM50.3576 37.4393C46.966 32.7457 41.429 29.301 34.9247 27.8383C38.3652 26.4366 41.0224 24.045 42.3673 21.1398C42.4855 20.8779 42.4699 20.589 42.324 20.3363C42.178 20.0835 41.9136 19.8874 41.5883 19.7909C41.2631 19.6943 40.9035 19.7051 40.5881 19.8208C40.2727 19.9366 40.0271 20.148 39.905 20.4087C39.0568 22.2485 37.5656 23.8525 35.6105 25.0278C33.6554 26.2031 31.3196 26.8998 28.8837 27.0343C26.4478 27.1687 24.0154 26.7352 21.8787 25.7858C19.742 24.8363 17.9918 23.4113 16.8385 21.682C15.6851 19.9526 15.1777 17.9925 15.377 16.037C15.5763 14.0815 16.474 12.2139 17.9622 10.6584C19.4504 9.10298 21.4658 7.92586 23.7663 7.26849C26.0668 6.61112 28.5546 6.50145 30.9308 6.95267C31.0994 6.98658 31.2747 6.99324 31.4465 6.97227C31.6184 6.9513 31.7833 6.90311 31.9318 6.83051C32.0803 6.7579 32.2093 6.66232 32.3114 6.54932C32.4136 6.43632 32.4868 6.30814 32.5267 6.17222C32.5667 6.03631 32.5727 5.89536 32.5444 5.75757C32.5161 5.61978 32.454 5.48788 32.3617 5.36953C32.2694 5.25118 32.1488 5.14874 32.0068 5.06815C31.8649 4.98756 31.7044 4.93043 31.5348 4.90007C27.8886 4.2044 24.0515 4.60748 20.7504 6.03297C17.4494 7.45846 14.9135 9.80734 13.6233 12.6347C12.3331 15.462 12.3781 18.5714 13.7499 21.3738C15.1216 24.1762 17.7248 26.477 21.0663 27.8404C14.566 29.3043 9.03275 32.7478 5.64287 37.4389C5.46853 37.6811 5.42103 37.9689 5.51081 38.2392C5.60059 38.5094 5.8203 38.74 6.1216 38.8801C6.42291 39.0202 6.78113 39.0583 7.11746 38.9862C7.4538 38.9141 7.74069 38.7375 7.91503 38.4954C9.95128 35.6629 12.8793 33.3109 16.4049 31.6758C19.9305 30.0406 23.9296 29.1797 28.0003 29.1798C32.0711 29.1798 36.0701 30.0407 39.5957 31.676C43.1213 33.3112 46.0492 35.6632 48.0854 38.4957C48.2597 38.7379 48.5466 38.9144 48.883 38.9866C49.2193 39.0587 49.5775 39.0205 49.8788 38.8804C50.1801 38.7403 50.3998 38.5098 50.4896 38.2395C50.5794 37.9693 50.5319 37.6814 50.3576 37.4393V37.4393Z" fill="white"/>
+                            </svg>
+                            Create New Account
+                        </a>
                     </span>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <label for="inputEmail">Email</label>
                     <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="inputPassword"><i class="fas fa-lock"></i> Password</label>
+                    <label for="inputPassword">Password</label>
                     <input type="password" name="password" id="inputPassword" class="form-control" required>
-                    <a href="{{ path('user_send_mail') }}" target="_blank">Forget Password <i class="fas fa-external-link-alt"></i></a>
+                    <a href="{{ path('user_send_mail') }}" target="_blank">Forget Password ?
+                    </a>
                 </div>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
 
                 <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" name="_remember_me" id="rememeberme">
-                    <label class="form-check-label" for="rememeberme">Remember me. </label>
+                    <label class="form-check-label" for="rememeberme">Remember me.
+                    </label>
                 </div>
-                
+
                 <div class="form-group">
                     <button class="btn btn-lg btn-primary" type="submit">
-                        <i class="fas fa-sign-in-alt"></i> Sign in
+                        <svg width="25" height="25" viewbox="0 0 36 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M26.271 7.58919V0H0.220623L19.175 5.16537V28.9017L0.515587 25.1875L0 26.7937L21.4748 31V25.0228H26.271V19.4564L19.4005 13.6439L26.271 7.58919V7.58919Z" fill="white"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24.211 13.7601L31.0935 19.4389V15.438H36V11.5863H31.0935V7.88176L24.211 13.7601Z" fill="white"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14.3788 15.5H16.6762V17.2747H14.3788V15.5Z" fill="white"/>
+                        </svg>
+                        Sign in
                     </button>
                 </div>
 
