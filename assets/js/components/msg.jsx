@@ -8,12 +8,12 @@ import { delete_msg_url, userImage } from '../urls';
 import Audio from '../ui/audio';
 
 const Msg = React.memo(({ msg, userId, setMsgs, conv}) => {
-    const {load: deleteMsg, loading: deleteLoading} = useFetch();
+    const {load, loading} = useFetch();
 
     const [state, setState] = useState('IDLE');
 
     const handleDelete = async () => {
-        await deleteMsg(delete_msg_url(msg.id), 'DELETE');
+        await load(delete_msg_url(msg.id), 'DELETE');
         setMsgs(msgs => msgs.filter(m => m !== msg));
     }
 
@@ -36,7 +36,7 @@ const Msg = React.memo(({ msg, userId, setMsgs, conv}) => {
     return(
         <div id="msg">
             {state === 'IDLE' && <>
-                {!deleteLoading  && <div className={mine(msg.user.id) ? 'my_msg' : 'not_my_msg'}>
+                {!loading  && <div className={mine(msg.user.id) ? 'my_msg' : 'not_my_msg'}>
                     <img src={userImage(msg.user.picture)}
                     width="30" height="30" className="rounded-circle" />
 
@@ -62,7 +62,7 @@ const Msg = React.memo(({ msg, userId, setMsgs, conv}) => {
                         { content }
                     </div>
                 </div>}
-                {deleteLoading && <Loader width={60} minHeight={60} strokeWidth={7}/>}
+                {loading && <Loader width={60} minHeight={60} strokeWidth={7}/>}
             </>}
 
             {state === 'EDIT' && <MsgForm  id={conv} msg={msg} onUpdate={onUpdate}/>}

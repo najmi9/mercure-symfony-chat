@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Conv from './conv';
 import { convs_url, convTopic, delete_conv, hub_url } from '../urls';
 import useFetchAll from '../hooks/useFetchAll';
@@ -8,8 +8,10 @@ import notify from '../utils/notify';
 
 const Convs = () => {
     const userId = parseInt(document.querySelector('div.data').dataset.user);
-    const {loading, load, data: convs, setData: setConvs} = useFetchAll(convs_url);
+    const {loading, load, data: convs, setData: setConvs, count} = useFetchAll();
     const {loading: deleteLoading, load: deleteLoad} = useFetch();
+    const [page, setPage] = useState(1);
+    const max = 4;
 
     const listenToMercure = useCallback(() => {
         const url = new URL(hub_url);
@@ -53,22 +55,28 @@ const Convs = () => {
         if (!yes) {
             return;
         }
-        const res = await deleteLoad(delete_conv(id), 'DELETE');
+        await deleteLoad(delete_conv(id), 'DELETE');
         setConvs(convs => convs.filter(e => e.id !== id));
     }, []);
 
-    useEffect(() => {
-        load();
-        const eventSource = listenToMercure();   
+    useEffect(async () => {
+        await load(`${convs_url}?page=${page}&max=${max}`);
+        const eventSource = listenToMercure();
         return function cleanup() {
             eventSource.close();
         }
-    }, []);
+    }, [page]);
 
     return (
         <>
             { loading && (<Loader />)}
             { !loading &&  (convs.map(c => (<Conv key={c.id} conv={c} loading={deleteLoading} deleteConv={deleteConv} />)))}
+
+            {!loading &&  count > page * max && <div className="box text-center">
+                <button className="btn btn-primary" onClick={() => setPage(page + 1)}>
+                    <i className={"fas fa-sync-alt"}></i> load more
+                </button>
+            </div>}
         </>
     );
 }

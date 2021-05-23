@@ -51,9 +51,7 @@ const MsgForm = ({id, msg={}, onUpdate=null}) => {
         }
     }
 
-    const addEmoji = (e) => {
-        ref.current.value += e.native;
-    };
+    const addEmoji = (e) => ref.current.value += e.native;
 
     useEffect(() => {
         if (msg && msg.content && ref.current) {

@@ -23,13 +23,24 @@ class MessageController extends AbstractController
     /**
      * @Route("/convs/{conv}/msgs", name="of_conv", methods={"GET"})
      */
-    public function getMessages(Conversation $conv, MessageRepository $msgRepo): JsonResponse
+    public function getMessages(Request $request, Conversation $conv, MessageRepository $msgRepo): JsonResponse
     {
+        /**
+         * @todo Why 2 Requests
+         */
         $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
 
-        $msgs = $msgRepo->findLast15Message($conv, 15);
+        $currentPage = $request->query->getInt('page', 1);
+        $max = $request->query->getInt('max', 15);
 
-        return  $this->json(array_reverse($msgs), 200, [], [
+        $offset = $currentPage * $max - $max;
+
+        $msgs = $msgRepo->findLast15Message($conv, $max, $offset);
+
+        return  $this->json([
+            'data' => array_reverse($msgs),
+            'count' => \count($msgRepo->findLast15Message($conv)),
+        ], 200, [], [
             'groups' => [
                 'msg'
             ],

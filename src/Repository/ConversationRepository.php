@@ -25,7 +25,7 @@ class ConversationRepository extends ServiceEntityRepository
     /**
      * @return Conversation[]
      */
-    public function findConvsOfUser(User $user, int $limit = 0): array
+    public function findConvsOfUser(User $user, int $limit = 0, int $offset = 0): array
     {
         $qb = $this->createQueryBuilder('c');
         $qb->join('c.users', 'users', 'WITH', $qb->expr()->in('users', $user->getId()));
@@ -34,7 +34,9 @@ class ConversationRepository extends ServiceEntityRepository
             $qb->setMaxResults($limit);
         }
 
-        $qb->orderBy('c.updatedAt', 'DESC');
+        $qb->orderBy('c.updatedAt', 'DESC')
+            ->setFirstResult($offset)
+        ;
 
         return $qb->getQuery()->getResult();
     }

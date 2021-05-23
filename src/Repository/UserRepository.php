@@ -41,14 +41,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * @return mixed[]
      */
-    public function findLast15Users(User $user, int $limit = 15): array
+    public function findLast15Users(User $user, int $limit = 15, int $offset): array
     {
+        if ($limit > 15) {
+            $limit = 15;
+        }
+
         return $this->createQueryBuilder('u')
             ->select('u.id, u.name, u.picture, u.email')
             ->where('u != :user')
             ->setParameter('user', $user)
             ->orderBy('u.id', 'ASC')
             ->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getArrayResult()
         ;

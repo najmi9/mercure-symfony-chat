@@ -22,12 +22,16 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
-    public function findLast15Message(Conversation $conv, int $limit = 15): array
+    public function findLast15Message(Conversation $conv, int $limit = 0, int $offset = 0): array
     {
         $qb = $this->createQueryBuilder('m');
         $qb->where('m.conversation = :conv')->setParameter('conv', $conv);
-    
-        $qb->setMaxResults($limit);
+        if ($offset > 0) {
+            $qb->setFirstResult($offset);
+        }
+        if ($limit > 0) {
+            $qb->setMaxResults($limit);
+        }
         $qb->orderBy('m.id', 'DESC');
 
         return $qb->getQuery()->getResult();

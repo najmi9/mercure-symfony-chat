@@ -16,7 +16,7 @@ const User = React.memo(({ user }) => {
     }, [user]);
 
     return (
-        <div>
+        <>
             {loading && <Loader width= {70} strokeWidth={15} minHeight={20} /> }
 
             {!loading && <div className="user card rounder shadow-lg p-2 m-3" onClick={handleClick}>
@@ -28,7 +28,7 @@ const User = React.memo(({ user }) => {
                     </div>
                 </div>
             </div>}
-        </div>
+        </>
     );
 });
 

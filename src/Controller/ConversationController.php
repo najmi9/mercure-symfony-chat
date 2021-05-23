@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -63,9 +64,21 @@ class ConversationController extends AbstractController
     /**
      * @Route("/convs", name="conversations", methods={"GET"})
      */
-    public function convs(ConversationRepository $convRepo): Response
+    public function convs(Request $request,  ConversationRepository $convRepo): Response
     {
-        $convs = $convRepo->findConvsOfUser($this->getUser(), /* limit */15);
+        /**
+         * @todo this method not working
+         */
+        $currentPage = $request->query->getInt('page', 1);
+        $max = $request->query->getInt('max', 15);
+
+        $offset = $currentPage * $max - $max;
+
+        if ($max > 15) {
+            $max = 15;
+        }
+
+        $convs = $convRepo->findConvsOfUser($this->getUser(), $max, $offset);
         $userConvs = [];
         foreach ($convs as $conv) {
             $c = [];
@@ -85,8 +98,11 @@ class ConversationController extends AbstractController
             }
             $userConvs[] = $c;
         }
-    
-        return $this->json($userConvs);
+
+        return $this->json([
+            'data' => $userConvs,
+            'count' => \count($convRepo->findConvsOfUser($this->getUser())),
+        ]);
     }
 
     /**
