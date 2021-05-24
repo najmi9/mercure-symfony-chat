@@ -1,0 +1,17 @@
+.draggable-popup-box{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.daraggable-popup{
+    position: absolute;;
+    background: #fff;
+    border-radius: 4px;
+    padding: 3px;
+    border: 1px solid #999;
+    overflow: auto;
+}

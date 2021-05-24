@@ -5,6 +5,7 @@ import { userImage } from '../urls';
 import Audio from '../ui/audio';
 import fromNow from '../lib/moment';
 import '../../styles/dropdown.css';
+import PopUp from '../ui/popup';
 
 const Msg = React.memo(({ msg, userId, conv, onDelete}) => {
 
@@ -16,7 +17,10 @@ const Msg = React.memo(({ msg, userId, conv, onDelete}) => {
     if (msg.content?.includes('data:audio')) {
         content = <Audio src={msg.content} />;
     } else if (msg.content.includes('data:image')) {
-        content = <Image src={msg.content} id={msg.id}/>;
+        content = <PopUp style={{ maxHeight: 70 + 'vh', marginTop: 15 + 'vh', maxWidth: 80 + 'vw', marginLeft: 10 + 'vw'}} 
+        trigger={<Image src={msg.content} id={msg.id}/>}>
+            <img src={msg.content} alt="Big Image" style={{ maxHeight: 75 + 'vh', maxWidth: 80 + 'vw' }}/>
+        </PopUp>;
     } else {
         content = msg.content;
     }
