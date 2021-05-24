@@ -196,7 +196,7 @@
         ]
     },
     "symfony/amqp-messenger": {
-        "version": "v5.1.5"
+        "version": "v5.1.11"
     },
     "symfony/apache-pack": {
         "version": "1.0",
@@ -265,7 +265,7 @@
         "version": "v5.1.5"
     },
     "symfony/doctrine-messenger": {
-        "version": "v5.1.5"
+        "version": "v5.1.11"
     },
     "symfony/dom-crawler": {
         "version": "v5.1.5"
@@ -382,7 +382,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "4.3",
-            "ref": "8a2675c061737658bed85102e9241c752620e575"
+            "ref": "e9a414b113ceadbf4e52abe37bf8f1b443f06ccb"
         },
         "files": [
             "config/packages/messenger.yaml"
@@ -479,7 +479,7 @@
         "version": "v5.1.10"
     },
     "symfony/redis-messenger": {
-        "version": "v5.1.5"
+        "version": "v5.1.11"
     },
     "symfony/routing": {
         "version": "5.1",

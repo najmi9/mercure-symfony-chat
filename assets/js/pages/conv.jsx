@@ -28,11 +28,12 @@ const Conv = ({match}) => {
     const listenToMercure = useCallback(() => {
         const url = new URL(hub_url);
         url.searchParams.append('topic', msgTopic(conv));
+
         const eventSource = new EventSource(url, { withCredentials: true });
 
         eventSource.onmessage = e => {
             const msg = JSON.parse(e.data);
-
+            console.log(e);
             if (msg.isDeleted) {
                 setMsgs(msgs => msgs.filter(m => m.id !== msg.id));
                 return;
@@ -48,7 +49,7 @@ const Conv = ({match}) => {
                 setMsgs(msgs => msgs.map(m => m.id === msg.id ? msg : m));
             }
 
-            ref.current.scrollTop = ref.current.clientHeight + 300
+            ref.current.scrollTop = ref.current.clientHeight + 500
         }
         return eventSource;
     }, [conv, page]);
@@ -61,7 +62,7 @@ const Conv = ({match}) => {
 
     useEffect(() => {
         load(`${msgs_url(conv)}?page=${page}&max=${max}`, true)
-        .then(()=> ref.current.scrollTop = ref.current.clientHeight + 300);
+        .then(()=> ref.current.scrollTop = ref.current.clientHeight + 500);
 
         const eventSource = listenToMercure(); 
 

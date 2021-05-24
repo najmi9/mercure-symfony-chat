@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Mercure;
+namespace App\Infrastructure\Mercure\Service;
 
 use App\Entity\User;
 use Lcobucci\JWT\Configuration;
@@ -12,18 +12,18 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class MercureCookieGenerator
 {
-    private string $secret;
+    private string $subscibe_secret;
 
-    public function __construct(string $secret)
+    public function __construct(string $subscibe_secret)
     {
-        $this->secret = $secret;
+        $this->subscibe_secret = $subscibe_secret;
     }
 
     public function generate(User $user): Cookie
     {
-        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->secret));
+        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->subscibe_secret));
 
-        $convs = $user->getConversations()->getValues();
+        $convs = $user->getConversations();
 
         $targets = [];
         // I can subscribe just for my convs
@@ -36,7 +36,6 @@ class MercureCookieGenerator
         $token = $configuration->builder()
             ->withClaim('mercure', [
                 'subscribe' => $targets,
-                'publish' => $targets,
             ])
             ->getToken($configuration->signer(), $configuration->signingKey())
             ->toString()

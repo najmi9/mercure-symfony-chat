@@ -17,7 +17,7 @@
         result = 'Now';
     }
 
-    if (s < 60) {
+    if (s < 60 & s > 1) {
         result = `a ${s} seconds ago`;
     }
 

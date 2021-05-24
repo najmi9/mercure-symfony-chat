@@ -27,13 +27,13 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-    App\Mercure\MercureCookieGenerator:
+    App\Infrastructure\Mercure\Service\MercureCookieGenerator:
         arguments:
-            $secret: '%env(MERCURE_JWT_KEY)%'
+            $subscibe_secret: '%env(MERCURE_SUBSCRIBER_JWT_KEY)%'
   
-    App\Mercure\JWTProvider:
+    App\Infrastructure\Mercure\Service\JWTProvider:
         arguments:
-            $secret: '%env(MERCURE_JWT_KEY)%'
+            $publish_secret: '%env(MERCURE_PUBLISHER_JWT_KEY)%'
   
     App\Listeners\ConversationListener:
         tags:
@@ -50,10 +50,6 @@ services:
       arguments:
         $projectDir: '%kernel.project_dir%'
 
-    App\Infrastructure\GeoLocation\GoogleGeoLocation:
-      arguments:
-        $googleMapKey: '%env(resolve:GOOGLE_MAP_KEY)%'
-    
     App\Infrastructure\Notification\EmailNotifier:
       arguments:
         $admin_email: '%env(ADMIN_EMAIL)%'

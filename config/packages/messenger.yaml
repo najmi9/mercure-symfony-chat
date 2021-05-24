@@ -1,12 +1,9 @@
 framework:
     messenger:
         transports:
-            async: 
-              dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-              retry_strategy: 
-                max_retries: 0
+            async: '%env(MESSENGER_TRANSPORT_DSN)%'
 
             failed: '%env(MESSENGER_FAILD_TRANSPORT_DSN)%'
 
         routing:
-            '\App\Infrastructure\Queue\Message\ServiceMethodMessage': async
+            'App\Infrastructure\Queue\Message\ServiceMethodMessage': async

@@ -17,9 +17,16 @@ const Convs = () => {
         const url = new URL(hub_url);
         url.searchParams.append('topic', convTopic(userId));
         const eventSource = new EventSource(url, { withCredentials: true });
+        // add the possibility to read missed messages after being offline for a while.
+        const lastEventId = localStorage.getItem('lastEventIdConv');
+
+        if (lastEventId) {
+            url.searchParams.append('Last-Event-ID', lastEventId);
+        }
 
         eventSource.onmessage = e => {
             const conv = JSON.parse(e.data);
+            localStorage.setItem('lastEventIdConv', e.lastEventId);
 
             if (conv.isDeleted) {
                 setConvs(convs => convs.filter(c => c.id !== conv.id));

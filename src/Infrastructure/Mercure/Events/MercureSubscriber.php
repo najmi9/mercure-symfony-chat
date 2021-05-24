@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Mercure;
+namespace App\Infrastructure\Mercure\Events;
 
 use App\Infrastructure\Mercure\Events\MercureEvent;
 use App\Infrastructure\Queue\EnqueueMethod;

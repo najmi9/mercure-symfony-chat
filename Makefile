@@ -14,7 +14,7 @@ install-mercure: ##  make install-mercure DIR="/path/when/mercure/willbe/install
 	tar -xzf $(DIR)/mercure_0.10.4_Linux_x86_64.tar.gz
 
 mercure: 
-	$(DIR)/mercure --jwt-key='cocolesamis' --addr='localhost:3000' --debug=1 --allow-anonymous=1 --cors-allowed-origins="http://localhost:8000"
+	$(DIR)/mercure --jwt-key='cocolesamis' --publisher-jwt-key='najmi' --subscriber-jwt-key='imad' --addr='localhost:3000' --publish-allowed-origins='http://localhost:3000' --allow-anonymous=0 --cors-allowed-origins="http://localhost:8000"
 
 
 server:
