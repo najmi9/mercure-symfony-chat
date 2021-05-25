@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="login" id="particles-js">
+    <div class="login">
         <div class="container mt-5 bg-light">
             {% for flashError in app.flashes('verify_email_error') %}
                 <div class="alert alert-danger" role="alert">{{ flashError }}</div>

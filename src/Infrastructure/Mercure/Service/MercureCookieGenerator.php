@@ -23,15 +23,7 @@ class MercureCookieGenerator
     {
         $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->subscibe_secret));
 
-        $convs = $user->getConversations();
-
-        $targets = [];
-        // I can subscribe just for my convs
-        $targets[] = "/convs/{$user->getId()}";
-
-        foreach ($convs as $conv) {
-            $targets[] = "/msgs/{$conv->getId()}";
-        }
+        $targets = $this->topics($user);
 
         $token = $configuration->builder()
             ->withClaim('mercure', [
@@ -48,5 +40,20 @@ class MercureCookieGenerator
             ->withHttpOnly(true)
             ->withSameSite('strict')
         ;
+    }
+
+    public function topics(User $user): array
+    {
+        $convs = $user->getConversations();
+
+        $targets = [];
+        // I can subscribe just for my convs
+        $targets[] = "/convs/{$user->getId()}";
+
+        foreach ($convs as $conv) {
+            $targets[] = "/msgs/{$conv->getId()}";
+        }
+
+        return $targets;
     }
 }

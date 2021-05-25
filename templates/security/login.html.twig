@@ -1,15 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('login') }}
-{% endblock %}
+{% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <div class="login" id="particles-js">
+    <div class="login">
         <div class="container mt-5 bg-light">
             <form method="post">
                 {% if error %}
@@ -62,7 +56,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button class="btn btn-lg btn-primary" type="submit">
+                    <button class="btn btn-primary" type="submit">
                         <svg width="25" height="25" viewbox="0 0 36 31" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M26.271 7.58919V0H0.220623L19.175 5.16537V28.9017L0.515587 25.1875L0 26.7937L21.4748 31V25.0228H26.271V19.4564L19.4005 13.6439L26.271 7.58919V7.58919Z" fill="white"/>
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M24.211 13.7601L31.0935 19.4389V15.438H36V11.5863H31.0935V7.88176L24.211 13.7601Z" fill="white"/>
@@ -75,9 +69,4 @@
             </form>
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('login') }}
 {% endblock %}

@@ -30,7 +30,6 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
-    .addEntry('login', './assets/pages/login.js')
     .addEntry('register', './assets/pages/register.js')
     .addEntry('error403', './assets/js/errors/error403.js')
     .addEntry('error404', './assets/js/errors/error404.js')

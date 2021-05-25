@@ -19,7 +19,7 @@ export const conv_url = id => (`/api/convs/${id}`);
 export const delete_conv = id => (`/api/convs/${id}/delete`);
 
 // Mercure Hub Url
-export const hub_url = 'http://localhost:3000/.well-known/mercure';
+export const hub_url = 'http://najmidev.tech/.well-known/mercure';
 
 //Mercure Topic
 export const msgTopic = (convId) => (`/msgs/${convId}`);
