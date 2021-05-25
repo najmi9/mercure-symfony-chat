@@ -44,7 +44,7 @@ class SendEmailCommand extends Command
 
         $this->emailNotifier->sendNow($email);
 
-        $io->success('User created successfully.');
+        $io->success('Email Sent successfully.');
 
         return Command::SUCCESS;
     }

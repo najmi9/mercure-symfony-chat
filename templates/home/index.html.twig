@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-2">
+    <div class="container">
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-4 text-left">
                 <button class="btn btn-sm btn-success" onclick="window.history.back();">
@@ -30,7 +30,6 @@
             </div>
         </div>
     </div>
-    <hr>
     <div id="root" class="data" data-user="{{ app.user.id }}"></div>
 {% endblock %}
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 
 const FileUpload = ({loading, postData}) => {
 
@@ -9,6 +10,10 @@ const FileUpload = ({loading, postData}) => {
     function readURL(input) {
         if (input.files && input.files[0]) {
             input.files.forEach(file => {
+                if (file.size > 2000000) { // 2M
+                    toast.error('File Size Must Be Less Than 2M.')
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = async function (e) {
                     await postData(e.target.result);

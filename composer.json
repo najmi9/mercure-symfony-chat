@@ -15,6 +15,7 @@
         "phpdocumentor/reflection-docblock": "^5.2",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^6.0",
+        "symfony/amazon-mailer": "5.1.*",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.1.*",
         "symfony/console": "5.1.*",
@@ -27,6 +28,7 @@
         "symfony/intl": "5.1.*",
         "symfony/mailer": "5.1.*",
         "symfony/mercure-bundle": "^0.3.2",
+        "symfony/messenger": "5.2.7",
         "symfony/mime": "5.1.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.1.*",
@@ -87,8 +89,7 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "security-checker security:check": "script"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"

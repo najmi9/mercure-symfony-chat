@@ -72,9 +72,10 @@ const Conv = ({match}) => {
     }, [page, conv]);
 
     return(
-        <div className="container mt-5">  
-            {loading && <Loader width= {80} strokeWidth={10} minHeight={80}/>}
+        <div className="container border-top pt-2">
             <ConvHeader conv={conv} />
+
+            {loading && <Loader width= {80} strokeWidth={10} minHeight={80}/>}
 
             {!loading && <div className="msgs" ref={ref}>
                 {count > page * max && <div className="box text-center">
