@@ -4,7 +4,7 @@ import DraggablePopUp from './drappgablePopUp';
 
 const PickerEmoji = ({addEmoji, loading}) => {
     return (
-        <DraggablePopUp style={{left:70 + '%', top: 260 + 'px'}}
+        <DraggablePopUp
             trigger={<button type='button' disabled={loading} className='btn border'>
                 <svg width="25" height="25" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M36 18C36 27.941 27.941 36 18 36C8.06 36 0 27.941 0 18C0 8.06 8.06 0 18 0C27.941 0 36 8.06 36 18Z" fill="#FFCC4D"/>

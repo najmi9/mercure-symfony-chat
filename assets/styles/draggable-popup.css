@@ -8,7 +8,10 @@
 }
 
 .daraggable-popup{
-    position: absolute;;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: #fff;
     border-radius: 4px;
     padding: 3px;
