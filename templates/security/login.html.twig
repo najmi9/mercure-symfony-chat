@@ -43,8 +43,7 @@
                 <div class="form-group">
                     <label for="inputPassword">Password</label>
                     <input type="password" name="password" id="inputPassword" class="form-control" required>
-                    <a href="{{ path('user_send_mail') }}" target="_blank">Forget Password ?
-                    </a>
+                    <a href="{{ path('user_send_mail') }}">Forget Password ?</a>
                 </div>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>

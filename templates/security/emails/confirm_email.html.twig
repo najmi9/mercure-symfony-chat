@@ -1,11 +1,39 @@
-<div>
-    <h4>Najmi DEV</h4>
-    <h1>Hi {{ username }}</h1>
-    <div>
-        <p>
-            Thanks for creating an account in Najmi DEV.
-            To confirm you account click the link bellow:
-            <a href="{{ absolute_url(path('user_email_confirmation', {confirmationToken: token})) }}">Confirm my email</a>
-        </p>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="container">
+        <h4>Najmi DEV</h4>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h5 class="card-label" style="font-weight:bold; color: blue;">
+                            Hi,
+                            {{ username }}
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <strong>Thanks for creating an account in Najmi DEV Chat</stronh>
+
+                    <p>Just one more step to confirm your email, click the button bellow
+                    </p>
+
+                    <p>
+                        <a href="{{ absolute_url(path('user_email_confirmation', {confirmationToken: token})) }}" class="btn btn-primary" target="_blank" rel="noopener">
+                            Confirm My Email
+                        </a>
+                    </p>
+                    <p>
+                        <small>If you have not do this, please ignore this email</small>
+                    </p>
+                </div>
+            </div>
+        </body>
+    </body>
+</html>

@@ -1,7 +1,35 @@
-<div>
-    <h1>Najmi DEV</h1>
-    <h4>Hi {{ username }}: </h4>
-    click this link <a href="{{ absolute_url(path('user_reset_password', {confirmationToken: token})) }}">
-        reset my password
-    </a>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="container">
+        <h4>Najmi DEV</h4>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h5 class="card-label" style="font-weight:bold; color: blue;">
+                            Hi,
+                            {{ username }}
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <strong>Click the button bellow to reset your pasword and get a new one </strong>
+
+                    <div>
+                        <a href="{{ absolute_url(path('user_reset_password', {confirmationToken: token})) }}" 
+                    class="btn btn-primary" target="_blank" rel="noopener" stylee="font-weight:bolder; color: blue;">Reset My Password</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small>If you have not request this, please ignore this email</small>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

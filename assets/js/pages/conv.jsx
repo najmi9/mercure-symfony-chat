@@ -33,7 +33,7 @@ const Conv = ({match}) => {
 
         eventSource.onmessage = e => {
             const msg = JSON.parse(e.data);
-            console.log(e);
+
             if (msg.isDeleted) {
                 setMsgs(msgs => msgs.filter(m => m.id !== msg.id));
                 return;
