@@ -21,16 +21,19 @@ class ExceptionListener implements EventSubscriberInterface
 
     public function onException(ExceptionEvent $event): void
     {
+        $request = $event->getRequest();
         $msg = $event->getThrowable()->getMessage();
+
         $email = $this->emailNotifier->createEmail("Error {$msg}", 'emails/error.html.twig', [
             'uri' => $event->getRequest()->getRequestUri(),
             'msg' => $msg,
             'trace' => $event->getThrowable()->getTraceAsString(),
+            'ip' => $request->getClientIp(),
         ]);
 
         $email->to($this->admin_email);
 
-        $this->emailNotifier->sendNow($email);
+        // $this->emailNotifier->sendNow($email);
     }
 
     public static function getSubscribedEvents()

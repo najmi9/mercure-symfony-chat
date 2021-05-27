@@ -11,7 +11,7 @@ const Convs = () => {
     const {loading, load, data: convs, setData: setConvs, count} = useFetchAll();
     const {loading: deleteLoading, load: deleteLoad} = useFetch();
     const [page, setPage] = useState(1);
-    const max = 14;
+    const max = 7;
 
     const listenToMercure = useCallback(() => {
         const url = new URL(hub_url);

@@ -13,6 +13,11 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            remember_me:
+              secret:   '%kernel.secret%'
+              lifetime: 604800 # 1 week in seconds
+              path:     /
+
             anonymous: true
             lazy: true
             provider: app_user_provider
@@ -24,7 +29,7 @@ security:
                 path: user_logout
              
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
         - { path: ^/auth, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/sitemap, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="container">
+        <h4>Najmi DEV</h4>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h5 class="card-label" style="font-weight:bold; color: blue;">
+                            New User Created with name === <strong style="color: green;">{{ user.name }}</strong> ==== 
+                        </h5>
+                    </div>
+                </div>
+                    <b>Created at</b>: {{ user.createdAt|date('d-m-Y H:i') }}<br/>
+                    <b>Email: </b> {{ user.email }}<br/>
+            </div>
+        </div>
+    </body>
+</html>

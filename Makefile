@@ -26,6 +26,8 @@ php-stan:
 cs-fixer:
 	./php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
 
+worker:
+	php bin/console messenger:consume async -vvv
 
 git:
 	git add .

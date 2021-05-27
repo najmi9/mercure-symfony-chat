@@ -25,8 +25,8 @@ class CreateUserCommand extends Command
         $this->encoder = $encoder;
     }
 
-    protected static $defaultName = 'create:user';
-    protected static $defaultDescription = 'Create new user.';
+    protected static $defaultName = 'create:admin';
+    protected static $defaultDescription = 'Create new admin.';
 
     protected function configure(): void
     {
@@ -49,12 +49,16 @@ class CreateUserCommand extends Command
         $user->setEmail($email)
             ->setPassword($this->encoder->encodePassword($user, $password))
             ->setName($name)
+            ->setIp('Admin')
+            ->setRoles(['ROLE_ADMIN'])
+            ->setIsEnabled(true)
+            ->setPicture('default-avatar.jpeg')
         ;
 
         $this->em->persist($user);
         $this->em->flush();
 
-        $io->success('User created successfully.');
+        $io->success('Admin created successfully.');
 
         return Command::SUCCESS;
     }

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin| users{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3>Usres : </h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>IP</th>
+                        <th>Is Enabled</th>
+                        <th>Convs</th>
+                        <th>Msgs</th>
+                        <th>Email</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td> <img src="{{ asset(user.picture ? 'uploads/users/' ~ user.picture : 'build/images/default-avatar.jpeg') }}" alt="User" width='60' height="50" class="rounded-circle"> </td>
+                                <td> {{ user.name }} </td>
+                                <td> {{ user.ip }} </td>
+                                <td> {{ user.isEnabled ? 'Yes' : 'No' }} </td>
+                                <td> {{ user.conversations|length }} </td>
+                                <td> {{ user.messages|length }} </td>
+                                <td> {{ user.email }} </td>
+                                <td> {{ user.createdAt|date('d-m-Y H:i') }} </td>
+                                <td>
+                                    <a href="{{ path('users_delete', {id: user.id}) }}" class="btn btn sm btn-danger">Del</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

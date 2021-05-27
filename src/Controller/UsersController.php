@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -31,5 +34,18 @@ class UsersController extends AbstractController
             'data' => $userRepo->findLast15Users($this->getUser(), $max, $offset),
             'count' => $userRepo->count([]),
         ]);
+    }
+
+    /**
+     * @Route("/{id}/delete", name="delete", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function delete(User $user, EntityManagerInterface $em): Response
+    {
+        $em->remove($user);
+        $em->flush();
+        $this->addFlash('success', 'User deleted');
+
+        return $this->redirectToRoute('admin_users');
     }
 }

@@ -15,11 +15,13 @@ class MercureSubscriber implements EventSubscriberInterface
 {
     private EnqueueMethod $enqueue;
     private SerializerInterface $serializer;
+    private HubInterface $hub;
 
-    public function __construct(EnqueueMethod $enqueue, SerializerInterface $serializer)
+    public function __construct(EnqueueMethod $enqueue, SerializerInterface $serializer, HubInterface $hub)
     {
         $this->enqueue = $enqueue;
         $this->serializer = $serializer;
+        $this->hub = $hub;
     }
 
     public static function getSubscribedEvents(): array
@@ -35,6 +37,8 @@ class MercureSubscriber implements EventSubscriberInterface
         $data = $event->getData();
 
         $update = new Update($channels, $this->serializer->serialize($data, 'json'));
-        $this->enqueue->enqueue(HubInterface::class, 'publish', [$update]);
+        $this->hub->publish($update);
+
+        //$this->enqueue->enqueue(HubInterface::class, 'publish', [$update]);
     }
 }

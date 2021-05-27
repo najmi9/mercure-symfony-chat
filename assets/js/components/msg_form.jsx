@@ -10,7 +10,6 @@ import PickerEmoji from '../ui/EmojiPicker';
 import Image from '../ui/image';
 import FileUpload from './fileUpload';
 import AudioUpload from './audioUpload';
-import PopUp from '../ui/popup';
 
 const MsgForm = ({id, msg={}, onUpdate=null}) => {
     const ref = useRef(null);

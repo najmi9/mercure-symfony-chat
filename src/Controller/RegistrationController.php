@@ -28,7 +28,6 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
@@ -38,22 +37,31 @@ class RegistrationController extends AbstractController
 
             $entityManager = $this->getDoctrine()->getManager();
             $token = $tokenGenerator->generateToken();
-            $user->setConfirmationToken($token);
+            $user->setConfirmationToken($token)
+                ->setIp($request->getClientIp())
+            ;
             $fileName = $fileUploader->uploadUserImage($user->getFile());
             $user->setPicture($fileName);
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
 
             $email = $emailNotifier->createEmail('Email Confirmation', 'security/emails/confirm_email.html.twig', [
                 'username' => $user->getName(),
                 'token' => $token,
             ]);
 
+            $adminMail = $emailNotifier->createEmail('New user created', 'emails/new_user.html.twig', [
+                'user' => $user,
+            ]);
+
+            $adminMail->to($this->getParameter('admin_mail'));
+
             $email->to($user->getEmail());
 
+            $emailNotifier->send($adminMail);
+
             $emailNotifier->send($email);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
 
            $this->addFlash('success', 'Check Your Email To Verify Your Account.');
 

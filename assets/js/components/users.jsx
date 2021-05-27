@@ -7,7 +7,7 @@ import useFetchAll from '../hooks/useFetchAll';
 const Users = () => {
     const {loading, load, data: users, count} = useFetchAll();
     const [page, setPage] = useState(1);
-    const max = 14;
+    const max = 7;
 
     useEffect( async() => {
         await load(`${users_url}?page=${page}&max=${max}`);

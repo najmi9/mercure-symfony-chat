@@ -21,7 +21,7 @@ const Conv = ({match}) => {
     }, [conv, page])
 
     const [page, setPage] = useState(1);
-    const max = 14;
+    const max = 7;
 
     const ref = useRef(null);
 
