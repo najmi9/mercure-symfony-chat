@@ -57,3 +57,7 @@ services:
     App\Infrastructure\Queue\Subscriber\FailedMessageSubscriber:
       arguments:
         $admin_email: '%env(ADMIN_EMAIL)%'
+    
+    App\Listeners\ExceptionListener:
+      arguments:
+        $admin_email: '%env(ADMIN_EMAIL)%'
