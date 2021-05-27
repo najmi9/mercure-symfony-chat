@@ -1,0 +1,19 @@
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+<loc> https://najmidev.tech </loc>
+</url>
+<url>
+<loc> https://najmidev.tech/auth/register </loc>
+</url>
+<url>
+<loc> https://najmidev.tech/auth/login </loc>
+</url>
+
+<url>
+<loc> https://najmidev.tech/auth/reset-password/send-email </loc>
+</url>
+
+<url>
+    <loc> https://najmidev.tech/auth/reset-password/{confirmationToken}</loc>
+</url>
+</urlset>
