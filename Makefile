@@ -5,6 +5,9 @@ CURRENT_DIR=$(shell pwd)
 MSG="initial commit"
 BRANCH="master"
 
+user= $(id -u)
+group= $(id -g)
+
 DIR=$(CURRENT_DIR)/mercure_binary
 
 install-mercure: ##  make install-mercure DIR="/path/when/mercure/willbe/installed"
@@ -33,3 +36,7 @@ git:
 	git add .
 	git commit -m "$(MSG)"
 	git push origin $(BRANCH)
+
+.PHONY: docker-up
+docker-up:
+	USER_ID=1000 GROUP_ID=1000 docker compose up --build

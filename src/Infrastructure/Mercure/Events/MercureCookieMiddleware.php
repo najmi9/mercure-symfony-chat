@@ -38,7 +38,7 @@ class MercureCookieMiddleware implements EventSubscriberInterface
 
     public function setMercureCookie(ResponseEvent $event): void
     {
-        $response = $event->getResponse();
+        /* $response = $event->getResponse();
         $request = $event->getRequest();
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()
             || !in_array('text/html', $request->getAcceptableContentTypes())
@@ -47,6 +47,6 @@ class MercureCookieMiddleware implements EventSubscriberInterface
             return;
         }
 
-        $response->headers->setCookie($this->generator->generate($user));
+        $response->headers->setCookie($this->generator->generate($user)); */
     }
 }

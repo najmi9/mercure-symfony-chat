@@ -24,6 +24,7 @@ class AppFixtures extends Fixture
         $user1->setPassword($this->encoder->encodePassword($user1, '123456'))
             ->setName('John Doe')
             ->setEmail('john@doe.com')
+            ->setIsEnabled(true)
         ;
 
         $user2 = new User();
@@ -31,6 +32,7 @@ class AppFixtures extends Fixture
         $user2->setPassword($this->encoder->encodePassword($user2, '123456'))
             ->setName('Sofia Broke')
             ->setEmail('sofia@broke.com')
+            ->setIsEnabled(true)
         ;
         
         $user3 = new User();
@@ -38,6 +40,7 @@ class AppFixtures extends Fixture
         $user3->setPassword($this->encoder->encodePassword($user3, '123456'))
             ->setName('Bernar Magali')
             ->setEmail('bernar@magali.com')
+            ->setIsEnabled(true)
         ;
         
         $user4 = new User();
@@ -45,6 +48,7 @@ class AppFixtures extends Fixture
         $user4->setPassword($this->encoder->encodePassword($user4, '123456'))
             ->setName('Vetrina Rami')
             ->setEmail('vetrina@rami.com')
+            ->setIsEnabled(true)
         ;
         
         $manager->persist($user1);
