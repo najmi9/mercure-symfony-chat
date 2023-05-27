@@ -31,7 +31,11 @@ class ConversationRepository extends ServiceEntityRepository
         int $offset = 0
     ): array {
         $qb = $this->createQueryBuilder('c');
-        $qb->join('c.users', 'users', 'WITH', $qb->expr()->in('users', $user->getId()));
+        $qb->join(
+            'c.users', 'users',
+            'WITH',
+            $qb->expr()->in('users', $user->getId())
+        );
 
         if ($limit > 0) {
             $qb->setMaxResults($limit);
@@ -52,7 +56,12 @@ class ConversationRepository extends ServiceEntityRepository
             ->join('c.users', 'u')
             ->where($qb->expr()->in('u', ':users'))
             ->groupBy('c')
-            ->having($qb->expr()->eq($qb->expr()->count('u'), ':userCount'))
+            ->having(
+                $qb->expr()->eq(
+                    $qb->expr()->count('u'),
+                    ':userCount'
+                )
+            )
             ->setParameter('users', $users)
             ->setParameter('userCount', count($users))
         ;

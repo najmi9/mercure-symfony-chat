@@ -22,7 +22,10 @@ class JWTProvider
 
     public function __invoke(): string
     {
-        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->publish_secret));
+        $configuration = Configuration::forSymmetricSigner(
+            new Sha256(),
+            InMemory::plainText($this->publish_secret)
+        );
 
         return $configuration->builder()
             ->withClaim('mercure', [

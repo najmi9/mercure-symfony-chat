@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Infrastructure\Mercure\Events;
 
 use App\Infrastructure\Mercure\Events\MercureEvent;
-use App\Infrastructure\Queue\EnqueueMethod;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
@@ -16,9 +15,8 @@ class MercureSubscriber implements EventSubscriberInterface
     private SerializerInterface $serializer;
     private HubInterface $hub;
 
-    public function __construct(EnqueueMethod $enqueue, SerializerInterface $serializer, HubInterface $hub)
+    public function __construct(SerializerInterface $serializer, HubInterface $hub)
     {
-        $this->enqueue = $enqueue;
         $this->serializer = $serializer;
         $this->hub = $hub;
     }
