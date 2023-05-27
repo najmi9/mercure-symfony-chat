@@ -33,7 +33,7 @@ class MercureSubscriber implements EventSubscriberInterface
         $channels = $event->getChannels();
         $data = $event->getData();
 
-        $update = new Update($channels, $this->serializer->serialize($data, 'json'));
+        $update = new Update($channels, $this->serializer->serialize($data, 'json'), false /* true */);
 
         $this->hub->publish($update);
     }

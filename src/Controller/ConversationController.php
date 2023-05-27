@@ -28,7 +28,7 @@ class ConversationController extends AbstractController
     private const FIRST_MESSAGE = 'Start new chat';
 
     /**
-     * @Route("/new/{id}", name="new", methods={"POST", "GET"})
+     * @Route("/new/{id}", name="new", methods={"POST"})
      */
     public function new(
         User $user,
