@@ -12,22 +12,35 @@ use Symfony\Component\Serializer\SerializerInterface;
 class MessageListener
 {
     private SerializerInterface $serializer;
+
     private EventDispatcherInterface $dispatcher;
 
-    public function __construct(EventDispatcherInterface $dispatcher, SerializerInterface $serializer)
-    {
+    public function __construct(
+        EventDispatcherInterface $dispatcher,
+        SerializerInterface $serializer
+    ) {
         $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
     }
 
     public function postPersist(Message $msg): void
     {
-        $this->dispatcher->dispatch(new MercureEvent(["/msgs/{$msg->getConversation()->getId()}"], $this->getData($msg)));
+        $this->dispatcher->dispatch(
+            new MercureEvent(
+                ["/msgs/{$msg->getConversation()->getId()}"],
+                $this->getData($msg)
+            )
+        );
     }
 
     public function postUpdate(Message $msg): void
     {
-        $this->dispatcher->dispatch(new MercureEvent(["/msgs/{$msg->getConversation()->getId()}"], $this->getData($msg, true)));
+        $this->dispatcher->dispatch(
+            new MercureEvent(
+                ["/msgs/{$msg->getConversation()->getId()}"],
+                $this->getData($msg, true)
+            )
+        );
     }
 
     private function getData(Message $msg, bool $update = false): array
@@ -36,11 +49,7 @@ class MessageListener
 
         $data = json_decode($data, true);
 
-        if ($update) {
-            $data['isNew'] = false;
-        } else {
-            $data['isNew'] = true;
-        }
+        $data['isNew'] = !$update;
 
         return $data;
     }

@@ -9,141 +9,151 @@ use App\Entity\User;
 use App\Infrastructure\Mercure\Events\MercureEvent;
 use App\Repository\ConversationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @IsGranted("ROLE_USER")
- * @Route("/api")
+ * @Route("/api/conversations", name="conversation_")
  */
 class ConversationController extends AbstractController
 {
+    private const MAX_CONVERSATIONS = 15;
+
+    private const FIRST_MESSAGE = 'Start new chat';
+
     /**
-     * @Route("/convs/new/{id}", name="conversation_new", methods={"POST", "GET"})
+     * @Route("/new/{id}", name="new", methods={"POST", "GET"})
      */
-    public function new(User $user, ConversationRepository $convRepo, EntityManagerInterface $em): JsonResponse
-    {
+    public function new(
+        User $user,
+        ConversationRepository $conversationRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $authenticatedUser = $this->getUser();
         if ($user === $this->getUser()) {
-            return $this->json(['msg' => 'You can not create conversation with yourself.'], 400);
+            return $this->json(
+                ['msg' => 'You can not create conversation with yourself.'],
+                400
+            );
         }
 
-        $conv = null;
-        $userConvs = $convRepo->findConvsOfUser($this->getUser());
+        $conversation = $conversationRepository->findConversationByUsers([
+            $authenticatedUser, $user
+        ]);
 
-        foreach ($userConvs as $cv) {
-            if ($cv->getUsers()->contains($user)) {
-                $conv = $cv;
-                break;
-            }
-        }
-
-        if ($conv) {
+        if ($conversation instanceof Conversation) {
             return $this->json([
-                'id' => $conv->getId(),
+                'id' => $conversation->getId(),
                 'alreadyExists' => true,
             ]);
         }
 
-        $conv = new Conversation();
-        $conv->addUser($this->getUser())
+        $conversation = new Conversation();
+        $conversation->addUser($authenticatedUser)
             ->addUser($user)
-            ->setOwnerId($this->getUser()->getId())
+            ->setOwnerId($authenticatedUser->getId())
         ;
-        $em->persist($conv);
-        $em->flush();
+        $entityManager->persist($conversation);
+        $entityManager->flush();
 
         return $this->json([
-            'id' => $conv->getId(), 
+            'id' => $conversation->getId(),
             'alreadyExists' => false,
         ]);
     }
 
     /**
-     * @Route("/convs", name="conversations", methods={"GET"})
+     * @Route("/", name="index", methods={"GET"})
      */
-    public function convs(Request $request,  ConversationRepository $convRepo): Response
-    {
+    public function index(
+        Request $request,
+        ConversationRepository $conversationRepository
+    ): JsonResponse {
         $currentPage = $request->query->getInt('page', 1);
-        $max = $request->query->getInt('max', 15);
+        $max = $request->query->getInt('max', self::MAX_CONVERSATIONS);
 
-        if ($max > 15) {
-            $max = 15;
+        if ($max > self::MAX_CONVERSATIONS) {
+            $max = self::MAX_CONVERSATIONS;
         }
+        $authenticatedUser = $this->getUser();
 
         $offset = $currentPage * $max - $max;
 
-        $convs = $convRepo->findConvsOfUser($this->getUser(), $max, $offset);
+        $conversations = $conversationRepository
+            ->findByUser($authenticatedUser, $max, $offset);
 
-        $userConvs = [];
-        foreach ($convs as $conv) {
-            $c = [];
-            $c['id'] = $conv->getId();
-            $c['ownerId'] = $conv->getOwnerId();
-            $c['msg'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getContent(): 'Start Chat Now';
-            $c['date'] = $conv->getLastMessage() !== null ? $conv->getLastMessage()->getUpdatedAt(): $conv->getUpdatedAt();
-            
-            foreach ($conv->getUsers() as $user) {
-                if ($user != $this->getUser()) {
-                    $c['user'] = [
+        $userConversations = [];
+        foreach ($conversations as $conversation) {
+            $lastMessage = $conversation->getLastMessage();
+            $item = [];
+            $item['id'] = $conversation->getId();
+            $item['ownerId'] = $conversation->getOwnerId();
+            $item['msg'] = $lastMessage ? $lastMessage->getContent() : self::FIRST_MESSAGE;
+            $item['date'] = $lastMessage ? $lastMessage->getUpdatedAt() : $conversation->getUpdatedAt();
+
+            foreach ($conversation->getUsers() as $user) {
+                if ($user !== $authenticatedUser) {
+                    $item['user'] = [
                         'id' => $user->getId(),
-                        'email' => $user->getemail(),
+                        'email' => $user->getEmail(),
                         'name' => $user->getName(),
                         'picture' => $user->getPicture()
                     ];
                 }
             }
-            $userConvs[] = $c;
+            $userConversations[] = $item;
         }
 
         return $this->json([
-            'data' => $userConvs,
-            'count' => (int) $convRepo->countConvsOfUser($this->getUser()),
+            'data' => $userConversations,
+            'count' => (int) $conversationRepository->countByUser($authenticatedUser),
         ]);
     }
 
     /**
-     * @Route("/convs/{id}", name="conversation_show", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET"})
      */
-    public function conv(Conversation $conv): JsonResponse
+    public function show(Conversation $conversation): JsonResponse
     {
-        $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
+        $this->denyAccessUnlessGranted('CONV_VIEW', $conversation);
 
-        return $this->json($conv, 200, [], [
+        return $this->json($conversation, 200, [], [
             'groups' => 'conv_show'
         ]);
     }
 
     /**
-     * @Route("/convs/{id}/delete", name="conversation_delte", methods={"DELETE"})
+     * @Route("/{id}/delete", name="delete", methods={"DELETE"})
      */
-    public function delete(Conversation $conv, EntityManagerInterface $em, EventDispatcherInterface $dispatcher): JsonResponse
-    {
-        // only the owner can delete a conversation not every one.
-        // if deleted, delete it also from the other participiant
-        $this->denyAccessUnlessGranted('CONV_DELETE', $conv);
+    public function delete(
+        Conversation $conversation,
+        EntityManagerInterface $entityManager,
+        EventDispatcherInterface $dispatcher
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('CONV_DELETE', $conversation);
         $targets = [];
 
-        foreach ($conv->getUsers() as $user) {
+        foreach ($conversation->getUsers() as $user) {
             $targets[] = "/convs/{$user->getId()}";
         }
 
         $dispatcher->dispatch(new MercureEvent($targets, [
-            'id' => $conv->getId(),
+            'id' => $conversation->getId(),
             'isDeleted' => true,
             ])
         );
-    
+
         try {
-            $em->remove($conv);
-            $em->flush();
-        } catch (\Exception $e) {
-            dd($e);
-             return $this->json(['error' => 'Unexpected Error'], 500);
+            $entityManager->remove($conversation);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return $this->json(['error' => 'Unexpected Error'], 500);
         }
 
         return $this->json([], 204);

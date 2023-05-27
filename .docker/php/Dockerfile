@@ -13,9 +13,6 @@ RUN docker-php-ext-install mysqli pdo_mysql
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
-RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
-RUN apt-get install symfony-cli
-
 WORKDIR /var/www
 
 RUN groupadd -f --gid $GROUP_ID user

@@ -22,55 +22,65 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MessageController extends AbstractController
 {
+    private const MAX_CONVERSATIONS = 15;
+
     /**
-     * @Route("/convs/{conv}/msgs", name="of_conv", methods={"GET"})
+     * @Route("/conversations/{id}/msgs", name="conversation", methods={"GET"})
      */
-    public function getMessages(Request $request, Conversation $conv, MessageRepository $msgRepo): JsonResponse
-    {
-        $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
+    public function getMessages(
+        Request $request,
+        Conversation $conversation,
+        MessageRepository $messageRepository
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('CONV_VIEW', $conversation);
 
         $currentPage = $request->query->getInt('page', 1);
-        $max = $request->query->getInt('max', 15);
-        if ($max > 15) {
-           $max = 15;
+        $max = $request->query->getInt('max', self::MAX_CONVERSATIONS);
+        if ($max > self::MAX_CONVERSATIONS) {
+           $max = self::MAX_CONVERSATIONS;
         }
         $offset = $currentPage * $max - $max;
 
-        $msgs = $msgRepo->findLastMessages($conv, $max, $offset);
+        $msgs = $messageRepository->findLastMessages($conversation, $max, $offset);
 
-        return  $this->json([
-            'data' => array_reverse($msgs),
-            'count' => (int) $msgRepo->countMessages($conv),
-        ], 200, [], [
-            'groups' => [
-                'msg'
+        return $this->json(
+            [
+                'data' => $msgs,
+                'count' => (int) $messageRepository->countByConversation($conversation),
             ],
-        ]);
+            200,
+            [],
+            ['groups' => ['msg']]
+        );
     }
 
      /**
-     * @Route("/convs/{id}/msgs/new", name="new", methods={"POST"})
+     * @Route("/conversations/{id}/msgs/new", name="new", methods={"POST"})
      */
-    public function new(Conversation $conv, Request $request, EntityManagerInterface $em): JsonResponse
-    {
-        $this->denyAccessUnlessGranted('CONV_VIEW', $conv);
+    public function new(
+        Conversation $conversation,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $this->denyAccessUnlessGranted('CONV_VIEW', $conversation);
 
-        if (!$request->getContent()) {
-            $this->json([], 400);
+        if (true === empty($request->getContent())) {
+            $this->json([
+                'msg' => 'Message content required',
+            ], 400);
         }
 
         $message = new Message();
         $message
             ->setUser($this->getUser())
             ->setContent($request->getContent())
-            ->setConversation($conv)
+            ->setConversation($conversation)
         ;
 
-        $conv->setLastMessage($message);
+        $conversation->setLastMessage($message);
 
-        $em->persist($message);
-        $em->persist($conv);
-        $em->flush();
+        $entityManager->persist($message);
+        $entityManager->flush();
 
         return $this->json(['id' => $message->getId()]);
     }
@@ -78,21 +88,30 @@ class MessageController extends AbstractController
     /**
      * @Route("/messages/{id}/delete", name="delete", methods={"DELETE"})
      */
-    public function delete(Message $message, EntityManagerInterface $em, EventDispatcherInterface $dispatcher): JsonResponse
-    {
+    public function delete(
+        Message $message,
+        EntityManagerInterface $entityManager,
+        EventDispatcherInterface $dispatcher
+    ): JsonResponse {
         /**
          * @todo Notify the conversation that the last message is updated.
          */
-        $this->denyAccessUnlessGranted('DELETE_MSG', $message, 'Only the admins or the message owner can delete it.');
-
-        $dispatcher->dispatch(new MercureEvent(["/msgs/{$message->getConversation()->getId()}"], [
-            'id' => $message->getId(),
-            'isDeleted' => true,
-            ])
+        $this->denyAccessUnlessGranted(
+            'DELETE_MSG',
+            $message,
+            'Only the admins or the message owner can delete it.'
         );
+        $event = new MercureEvent(
+            ["/msgs/{$message->getConversation()->getId()}"],
+            [
+                'id' => $message->getId(),
+                'isDeleted' => true,
+            ]
+        );
+        $dispatcher->dispatch($event);
 
-        $em->remove($message);
-        $em->flush();
+        $entityManager->remove($message);
+        $entityManager->flush();
 
         return $this->json([], 204);
     }
@@ -100,12 +119,19 @@ class MessageController extends AbstractController
     /**
      * @Route("/messages/{id}/update", name="edit", methods={"PUT"})
      */
-    public function edit(Request $request, Message $message, EntityManagerInterface $em): JsonResponse
-    {
+    public function edit(
+        Request $request,
+        Message $message,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
         /**
          * @todo Notify the conversation that the last message is updated.
          */
-        $this->denyAccessUnlessGranted('EDIT_MSG', $message, 'Only the admins or the message owner can edit it.');
+        $this->denyAccessUnlessGranted(
+            'EDIT_MSG',
+            $message,
+            'Only the admins or the message owner can edit it.'
+        );
         $content = $request->getContent();
 
         if (empty($content)) {
@@ -114,11 +140,14 @@ class MessageController extends AbstractController
 
         $message->setContent($content);
 
-        $em->persist($message);
-        $em->flush();
+        $entityManager->persist($message);
+        $entityManager->flush();
 
-        return $this->json($message, 200, [], [
-            'groups' => 'msg',
-        ]);
+        return $this->json(
+            $message,
+            200,
+            [],
+            ['groups' => 'msg']
+        );
     }
 }

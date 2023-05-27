@@ -37,7 +37,7 @@ const Convs = () => {
                 notify();
             }
 
-            conv['user'] = conv.users.filter(u => u.id !== userId)[0]; 
+            conv['user'] = conv.users.filter(u => u.id !== userId)[0];
             delete conv['users'];
             if (conv.new) {
                 setConvs(convs => [conv, ...convs]);
@@ -46,7 +46,7 @@ const Convs = () => {
                 setConvs(convs => {
                     const oldConvs = [...convs];
                     const oldData = {...oldConvs.filter(e => e.id === conv.id)[0]};
-                    oldData.msg = conv.msg; 
+                    oldData.msg = conv.msg;
                     oldData.date = conv.date;
                     const cs = oldConvs.filter(c => c.id !== conv.id);
                     cs.splice(0, 0, oldData);

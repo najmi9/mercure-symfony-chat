@@ -1,9 +1,9 @@
 version: '3.8'
 
-networks: 
+networks:
     dev:
 
-services: 
+services:
     mailhog:
         image: mailhog/mailhog
         container_name: mailhog-container
@@ -54,7 +54,7 @@ services:
             - db_data:/var/lib/mysql
         ports:
             - '3306:3306'
-    
+
     mercure:
         image: dunglas/mercure
         container_name: mercure-container
@@ -70,13 +70,13 @@ services:
                 cors_origins http://127.0.0.1:8000 http://localhost:8000
                 ui: true
                 subscriptions: true
-        command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
+        command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
         volumes:
             - mercure_data:/data
             - mercure_config:/config
         networks:
             - dev
-    
+
     redis:
         restart: unless-stopped
         image: redis:latest
@@ -84,7 +84,7 @@ services:
         hostname: redis
         ports:
             - 6379:6379
-        volumes: 
+        volumes:
             - /docker/redis:/data
         networks:
             - dev
