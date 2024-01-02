@@ -16,11 +16,11 @@ const Conv = ({match}) => {
 
     const {load: deleteMsg} = useFetch();
 
+    const [page, setPage] = useState(1);
     const handleDelete = useCallback(async(id) => {
             await deleteMsg(delete_msg_url(id), 'DELETE');
     }, [conv, page])
 
-    const [page, setPage] = useState(1);
     const max = 7;
 
     const ref = useRef(null);
@@ -64,7 +64,7 @@ const Conv = ({match}) => {
         load(`${msgs_url(conv)}?page=${page}&max=${max}`, true)
         .then(()=> ref.current.scrollTop = ref.current.clientHeight + 500);
 
-        const eventSource = listenToMercure(); 
+        const eventSource = listenToMercure();
 
         return function cleanup() {
             eventSource.close();
@@ -85,7 +85,7 @@ const Conv = ({match}) => {
                         </svg> load more
                     </button>
                 </div>}
-        
+
                 {msgs.map(m => (<Msg msg={m} key={m.id} userId={userId} conv={conv} onDelete={() => handleDelete(m.id)}/>))}
 
                 <MsgForm id={conv} />
