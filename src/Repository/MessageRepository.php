@@ -45,7 +45,13 @@ class MessageRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function countByConversation(Conversation $conversation): string
+    /**
+     * Returns the number of messages in a conversation.
+     *
+     * @param Conversation $conversation
+     * @return int
+     */
+    public function countByConversation(Conversation $conversation): int
     {
         return $this->createQueryBuilder('m')
             ->where('m.conversation = :conversation')
