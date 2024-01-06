@@ -10,26 +10,22 @@ use App\Infrastructure\Mercure\Events\MercureEvent;
 use App\Repository\ConversationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @IsGranted("ROLE_USER")
- * @Route("/api/conversations", name="conversation_")
- */
+#[Route('/api/conversations', name: 'conversation_')]
+#[IsGranted('ROLE_USER')]
 class ConversationController extends AbstractController
 {
     private const MAX_CONVERSATIONS = 15;
 
     private const FIRST_MESSAGE = 'Start new chat';
 
-    /**
-     * @Route("/new/{id}", name="new", methods={"POST"})
-     */
+    #[Route('/new/{id}', name: 'new', methods: ['POST'])]
     public function new(
         User $user,
         ConversationRepository $conversationRepository,
@@ -68,9 +64,7 @@ class ConversationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/", name="index", methods={"GET"})
-     */
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(
         Request $request,
         ConversationRepository $conversationRepository
@@ -116,9 +110,7 @@ class ConversationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="show", methods={"GET"})
-     */
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Conversation $conversation): JsonResponse
     {
         $this->denyAccessUnlessGranted('CONV_VIEW', $conversation);
@@ -128,9 +120,7 @@ class ConversationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/delete", name="delete", methods={"DELETE"})
-     */
+    #[Route('/{id}/delete', name: 'delete', methods: ['DELETE'])]
     public function delete(
         Conversation $conversation,
         EntityManagerInterface $entityManager,

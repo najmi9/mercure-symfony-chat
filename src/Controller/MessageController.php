@@ -9,24 +9,20 @@ use App\Entity\Message;
 use App\Infrastructure\Mercure\Events\MercureEvent;
 use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @IsGranted("ROLE_USER")
- * @Route("/api", name="messages_")
- */
+#[Route('/api', name: 'messages_')]
+#[IsGranted('ROLE_USER')]
 class MessageController extends AbstractController
 {
     private const MAX_CONVERSATIONS = 15;
 
-    /**
-     * @Route("/conversations/{id}/msgs", name="conversation", methods={"GET"})
-     */
+    #[Route('/conversations/{id}/msgs', name: 'conversation', methods: ['GET'])]
     public function getMessages(
         Request $request,
         Conversation $conversation,
@@ -54,9 +50,7 @@ class MessageController extends AbstractController
         );
     }
 
-     /**
-     * @Route("/conversations/{id}/msgs/new", name="new", methods={"POST"})
-     */
+     #[Route('/conversations/{id}/msgs/new', name: 'new', methods: ['POST'])]
     public function new(
         Conversation $conversation,
         Request $request,
@@ -85,9 +79,7 @@ class MessageController extends AbstractController
         return $this->json(['id' => $message->getId()]);
     }
 
-    /**
-     * @Route("/messages/{id}/delete", name="delete", methods={"DELETE"})
-     */
+    #[Route('/messages/{id}/delete', name: 'delete', methods: ['DELETE'])]
     public function delete(
         Message $message,
         EntityManagerInterface $entityManager,
@@ -116,9 +108,7 @@ class MessageController extends AbstractController
         return $this->json([], 204);
     }
 
-    /**
-     * @Route("/messages/{id}/update", name="edit", methods={"PUT"})
-     */
+    #[Route('/messages/{id}/update', name: 'edit', methods: ['PUT'])]
     public function edit(
         Request $request,
         Message $message,

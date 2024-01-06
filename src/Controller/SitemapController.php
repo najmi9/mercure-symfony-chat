@@ -11,9 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SitemapController extends AbstractController
 {
-    /**
-     * @Route("/sitemap", name="sitemap", defaults={"_format"="xml"})
-     */
+    #[Route('/sitemap', name: 'sitemap', defaults: ['_format' => 'xml'], methods: ['GET'])]
     public function index(Request $request): Response
     {
         $hostname = $request->getSchemeAndHttpHost();

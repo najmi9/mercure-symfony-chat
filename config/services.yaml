@@ -31,16 +31,15 @@ services:
     App\Infrastructure\Mercure\Service\MercureCookieGenerator:
         arguments:
             $subscibe_secret: '%env(MERCURE_SUBSCRIBER_JWT_KEY)%'
-  
+
     App\Infrastructure\Mercure\Service\JWTProvider:
         arguments:
             $publish_secret: '%env(MERCURE_PUBLISHER_JWT_KEY)%'
-  
+
     App\Listeners\ConversationListener:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: 'postPersist', entity: 'App\Entity\Conversation'}
             - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Entity\Conversation'}
-
 
     App\Listeners\MessageListener:
         tags:
@@ -54,11 +53,17 @@ services:
     App\Infrastructure\Notification\EmailNotifier:
       arguments:
         $admin_email: '%admin_mail%'
-    
+
     App\Infrastructure\Queue\Subscriber\FailedMessageSubscriber:
       arguments:
         $admin_email: '%admin_mail%'
-    
+
     App\Listeners\ExceptionListener:
       arguments:
         $admin_email: '%admin_mail%'
+
+    App\EventListener\AccessDeniedListener:
+        arguments:
+            $twig: '@twig'
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.exception', method: 'onKernelException' }
