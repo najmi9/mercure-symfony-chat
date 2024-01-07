@@ -11,57 +11,41 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=MessageRepository::class)
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: MessageRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Message
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"msg"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(["msg"])]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="messages")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"msg"})
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "messages")]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["msg"])]
     private $user;
 
-    /**
-     * @ORM\Column(type="text")
-     * @Groups({"msg"})
-     * @Assert\NotBlank
-     * @Assert\NotNull
-     * @Assert\Length(min=1)
-     */
+    #[ORM\Column(type: "text")]
+    #[Groups(["msg"])]
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Length(min: 1)]
     private $content;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: "datetime")]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Groups({"msg"})
-     */
+    #[ORM\Column(type: "datetime")]
+    #[Groups(["msg"])]
     private $updatedAt;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Conversation::class, mappedBy="lastMessage")
-     * ORM\JoinColumn(onDelete="SET NULL")
-     */
+    #[ORM\OneToMany(targetEntity: Conversation::class, mappedBy: "lastMessage")]
+    #[ORM\JoinColumn(onDelete: "SET NULL")]
     private $conversations;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Conversation::class, inversedBy="messages")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     */
+    #[ORM\ManyToOne(targetEntity: Conversation::class, inversedBy: "messages")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private $conversation;
 
     public function __construct()
@@ -103,9 +87,7 @@ class Message
         return $this->createdAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function setCreatedAt(): self
     {
         $this->createdAt = new \DateTime();
@@ -118,10 +100,8 @@ class Message
         return $this->updatedAt;
     }
 
-    /**
-     * @ORM\PreUpdate
-     * @ORM\PrePersist
-     */
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
     public function setUpdatedAt(): self
     {
         $this->updatedAt = new \DateTime();
