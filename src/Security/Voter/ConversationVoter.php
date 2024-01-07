@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ConversationVoter extends Voter
 {
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, ['CONV_EDIT', 'CONV_VIEW', 'CONV_DELETE'])
             && $subject instanceof Conversation;
@@ -24,7 +24,7 @@ class ConversationVoter extends Voter
      * @param TokenInterface $token
      * @return void
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         /** @var User $user */
         $user = $token->getUser();
@@ -41,7 +41,7 @@ class ConversationVoter extends Voter
                 }
 
                 return false;
-    
+
             case 'CONV_VIEW':
                 $usersConv = $subject->getUsers()->getValues();
                 if (in_array($user, $usersConv)) {

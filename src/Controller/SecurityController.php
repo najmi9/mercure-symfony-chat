@@ -14,18 +14,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-/**
- * @Route("/auth", name="user_")
- */
+#[Route('/auth', name: 'user_')]
 class SecurityController extends AbstractController
 {
-    /**
-     *@Route("/login", name="login", options={"expose": true}, methods={"GET", "POST"})
-     */
+    #[Route('/login', name: 'login', options: ['expose' => true], methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
         if ($this->getUser() instanceof User) {
@@ -40,17 +36,13 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername ?? $email, 'error' => $error]);
     }
 
-    /**
-     * @Route("/logout", name="logout", methods={"GET"})
-     */
+    #[Route('/logout', name: 'logout', methods: ['GET'])]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    /**
-     * @Route("/reset-password/send-email", name="send_mail", methods={"GET", "POST"})
-     */
+    #[Route('/reset-password/send-email', name: 'send_mail', methods: ['GET', 'POST'])]
     public function sendEmail(Request $request, UserRepository $userRepo, TokenGeneratorInterface $tokenGenerator, EntityManagerInterface $em,
     EmailNotifierInterface $emailNotifier): Response
     {
@@ -89,10 +81,8 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/reset-password/{confirmationToken}", name="reset_password", methods={"GET", "POST"})
-     */
-    public function resetPassword(Request $request, User $user, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder): Response
+    #[Route('/reset-password/{confirmationToken}', name: 'reset_password', methods: ['GET', 'POST'])]
+    public function resetPassword(Request $request, User $user, EntityManagerInterface $em, UserPasswordHasherInterface $encoder): Response
     {
         if (!$user) {
             $this->addFlash('danger', 'security.errors.user_not_found');
@@ -103,7 +93,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($encoder->encodePassword($user, $form->get('password')->getData()))
+            $user->setPassword($encoder->hashPassword($user, $form->get('password')->getData()))
                 ->setConfirmationToken(null)
             ;
             $em->persist($user);
@@ -118,9 +108,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/confirm-email/{confirmationToken}", name="email_confirmation", methods={"GET"})
-     */
+    #[Route('/confirm-email/{confirmationToken}', name: 'email_confirmation', methods: ['GET'])]
     public function confirmEmail(User $user, EntityManagerInterface $em): Response
     {
         if (!$user) {

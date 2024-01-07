@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Entity\Conversation;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -70,9 +72,12 @@ class ConversationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return string
+     * Returns the number of conversations for a user.
+     *
+     * @param User $user A user instance
+     * @return int
      */
-    public function countByUser(User $user): string
+    public function countByUser(User $user): int
     {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');

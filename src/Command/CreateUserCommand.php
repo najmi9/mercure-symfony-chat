@@ -11,14 +11,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CreateUserCommand extends Command
 {
-    private UserPasswordEncoderInterface $encoder;
+    private UserPasswordHasherInterface $encoder;
     private EntityManagerInterface $em;
 
-    public function __construct(UserPasswordEncoderInterface $encoder, EntityManagerInterface $em)
+    public function __construct(UserPasswordHasherInterface $encoder, EntityManagerInterface $em)
     {
         parent::__construct();
         $this->em = $em;
@@ -45,9 +45,9 @@ class CreateUserCommand extends Command
         $password = $helper->ask($input, $output, (new Question('Enter the password: '))->setHidden(true));
         $name = $helper->ask($input, $output, new Question('Enter the username: '));
         $user = new User();
-      
+
         $user->setEmail($email)
-            ->setPassword($this->encoder->encodePassword($user, $password))
+            ->setPassword($this->encoder->hashPassword($user, $password))
             ->setName($name)
             ->setIp('Admin')
             ->setRoles(['ROLE_ADMIN'])

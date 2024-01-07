@@ -10,19 +10,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @IsGranted("ROLE_USER")
- * @Route("/api/users", name="users_")
-*/
+#[Route('/api/users', name: 'users_')]
+#[IsGranted('ROLE_USER')]
 class UsersController extends AbstractController
 {
-    /**
-     * @Route("/", name="index", methods={"GET"})
-     */
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(Request $request, UserRepository $userRepo): JsonResponse
     {
         $currentPage = $request->query->getInt('page', 1);
@@ -36,10 +32,8 @@ class UsersController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/delete", name="delete", methods={"GET"})
-     * @IsGranted("ROLE_ADMIN")
-     */
+    #[Route('/{id}/delete', name: 'delete', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(User $user, EntityManagerInterface $em): Response
     {
         $em->remove($user);

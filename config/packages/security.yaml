@@ -1,5 +1,8 @@
 security:
-    encoders:
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_USER]
+
+    password_hashers:
         App\Entity\User:
             algorithm: auto
 
@@ -17,21 +20,16 @@ security:
               secret:   '%kernel.secret%'
               lifetime: 604800 # 1 week in seconds
               path:     /
-
-            anonymous: true
             lazy: true
             provider: app_user_provider
             user_checker: App\Security\UserChecker
-            guard:
-                authenticators:
-                    - App\Security\AppAuthenticator
+            custom_authenticators:
+                - App\Security\AppAuthenticator
             logout:
                 path: user_logout
-             
+                target: user_login
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-
-        - { path: ^/auth, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/sitemap, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-
+        - { path: ^/auth, roles: PUBLIC_ACCESS }
+        - { path: ^/sitemap, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }

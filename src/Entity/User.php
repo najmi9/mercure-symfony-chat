@@ -9,107 +9,74 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
- */
-class User implements UserInterface
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ["email"], message: "There is already an account with this email")]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"msg", "conv_show"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(["msg", "conv_show"])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"msg"})
-     * @Assert\Email
-     * @Assert\NotBlank
-     */
+    #[ORM\Column(type: "string", length: 180, unique: true)]
+    #[Groups(["msg"])]
+    #[Assert\Email]
+    #[Assert\NotBlank]
     private $email;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: "json")]
     private $roles = [];
 
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank
-     * @Assert\NotNull
-     * @Assert\Length(min=5, max=4096)
-     */
+    #[ORM\Column(type: "string")]
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Length(min: 5, max: 4096)]
     private $password;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="user")
-     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: "user")]
     private $messages;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="users")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
+    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: "users")]
+    #[ORM\JoinColumn(onDelete: "SET NULL")]
     private $conversations;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Groups({"msg", "conv_show"})
-     * @Assert\NotBlank
-     * @Assert\NotNull
-     * @Assert\Length(min=3)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: false)]
+    #[Groups(["msg", "conv_show"])]
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Length(min: 3)]
     private $name;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: "boolean", nullable: true)]
     private $isEnabled;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $confirmationToken;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $city;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $address;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"msg", "conv_show"})
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[Groups(["msg", "conv_show"])]
     private $picture;
 
-    /**
-     * @Assert\NotNull
-     * @Assert\NotBlank
-     */
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
     private $file;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: "datetime")]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $ip;
 
     public function __construct()
@@ -141,7 +108,7 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
@@ -170,7 +137,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self
@@ -198,8 +165,9 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
+
     /**
-     * @return Collection|Message[]
+     * @return Collection
      */
     public function getMessages(): Collection
     {
@@ -229,7 +197,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Conversation[]
+     * @return Collection
      */
     public function getConversations(): Collection
     {

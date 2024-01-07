@@ -10,53 +10,37 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=ConversationRepository::class)
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: ConversationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Conversation
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"conv_show"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(["conv_show"])]
     private $id;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="conversations")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"conv_show"})
-     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: "conversations")]
+    #[ORM\JoinColumn(onDelete: "SET NULL")]
+    #[Groups(["conv_show"])]
     private $users;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Message::class, inversedBy="conversations")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
+    #[ORM\ManyToOne(targetEntity: Message::class, inversedBy: "conversations")]
+    #[ORM\JoinColumn(onDelete: "SET NULL")]
     private $lastMessage;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="conversation")
-     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
-     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: "conversation")]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private $messages;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: "datetime")]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Groups({"conv_show"})
-     */
+    #[ORM\Column(type: "datetime")]
+    #[Groups(["conv_show"])]
     private $updatedAt;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: "integer", nullable: true)]
     private $ownerId;
 
     public function __construct()
@@ -141,9 +125,7 @@ class Conversation
         return $this->createdAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function setCreatedAt(): self
     {
         $this->createdAt = new \DateTime();
@@ -156,10 +138,8 @@ class Conversation
         return $this->updatedAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function setUpdatedAt(): self
     {
         $this->updatedAt = new \DateTime();
